@@ -1,0 +1,7 @@
+env-api/
+.vscode/
+
+__pycache__/
+backups/
+reference/
+
