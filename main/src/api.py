@@ -19,20 +19,6 @@ from update import Update # to update.py
 app = Flask(__name__) # Initialisation of a flask app
 api = Api(app) # Initilisation of a RESTful API
 
-"""
-The following code is PUT request specific, until indicated by "ends here". And this is a guideline for creating future PUT request functions.
-
-While constructing the url, and adding it as a resource. The parameters passed in during url construction.
-Will need to be added as a parameter in the PUT function. Or there will be an error - indicating that the parameter is passed in, but not expected. 
-Which will crash the API. Once you add it as an accepted argument in the PUT function. You can just leave it, you dont actually need to do anything with it.
-"""
-
-sqlRequests = reqparse.RequestParser()
-sqlRequests.add_argument("debtorCode", type=str, help="You need to enter a unique debtor code.")
-sqlRequests.add_argument("companyName", type=str, help="You need to enter a unique debtor code.")
-
-"""ends here"""
-
 class SQL(Resource):
     def __init__(self):
         self.mydb = mysql.connector.connect(

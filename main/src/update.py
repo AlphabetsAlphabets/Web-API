@@ -17,7 +17,7 @@ class Update(Resource):
         self.cursor = self.mydb.cursor()
         
         """
-        The following code is PUT/POST request specific, until indicated by "ends here". And this is a guideline for creating future PUT request functions.
+        The following code is PUT/POST request specific, and this is a guideline for creating future PUT/POST request functions.
 
         While constructing the url, and adding it as a resource. The parameters passed in during url construction.
         Will need to be added as a parameter in the respective function. Or there will be an error - indicating that the parameter is passed in, but not expected. 
