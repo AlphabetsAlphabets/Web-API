@@ -15,30 +15,33 @@ a GET or a POST request.
 
 class Sync(Resource):
     def __init__(self):
+        """
+        This metohd will initialise the connection to the mySql database, and the SQLite database. If the SQLite database does not exist when attempting to 
+        connect to it - it will be created. Before it can be accessed.
+        """
         self.mySql = mysql.connector.connect(
-            host="localhost",
+            host="localhost", 
             user="root",
             password="YJH030412yjh_g",
             database="testing"
             )
+        """The host, user, password, and database variables will need to be changed accordingly to the host ip of the server, etc."""
         self.sqlCursor = self.mySql.cursor()
     
         self.liteCon = sqlite3.connect("main\src\SQLiteTutorialsDB.db")
         self.liteCursor = self.liteCon.cursor()
 
     def get(self):
-        self.sqlCursor.execute("SELECT * FROM departments WHERE Salesperson = '2'")
+        # TODO: Make the request dynamic, and change it to a PUT/POST request
+        self.sqlCursor.execute("SELECT * FROM departments WHERE Salesperson = '2'") 
         resSql = self.sqlCursor.fetchall()
         self.liteCursor.execute("SELECT * FROM Departments WHERE Salesperson = '2'")
         resLite = self.liteCursor.fetchall()
 
-        if len(resSql) == len(resLite):
-            return {"message": "No changes."}
-        
 
         valid = [lite for lite in resLite if lite not in resSql]
-        print(valid)
-        print(resSql)
+        if len(valid) == 0:
+            return {"message": "No changes made, as no new entries are made."}
 
         commits = [f"INSERT INTO `testing`.`departments` (`DepartmentId`, `DepartmentName`, `Salesperson`) VALUES ('{id}', '{depName}', '{salesperson}')" for id, depName, salesperson in valid]
 

@@ -69,20 +69,6 @@ class SQL(Resource):
 
         return {200: {"success": headersAndValues}}
 
-    # def put(self, name, hash):
-    #     """Current error is SQL database related and not the fault of the api. As of Tuesday, 12/1/2021"""
-
-    #     print("PUT request")
-
-    #     args = sqlRequests.parse_args()
-    #     debtorCode, companyName = args["debtorCode"], args["companyName"] 
-    #     print("POST request made")
-
-    #     query = f"INSERT INTO `tsc_office`.`tinvoicehistory` (`fdebtorcode`, `fcompanyname`) VALUES ({name}, {hash})"
-    #     print()
-    #     return {200: {"success": "Successfully added a new entry."}}
-
-
 # Adding resources
 """
 This is for any request, but, is most significant for a GET request. In the second parameter you can see the following:
@@ -96,7 +82,7 @@ api.add_resource(Update, "/update")
 
 @app.route("/") # Default page
 def hello():
-    return "If you are on this screen. Make sure you know what youre doing. If not, leave the site."
+    return "If you are on this screen. Make sure you know what you're doing. If not, leave the site."
 
 @app.route("/password")
 def password():
