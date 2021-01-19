@@ -1,7 +1,6 @@
 # Syncing SQLite and MySQL databases.
 The purpose of this syncing is to be able to update the global catalogue of purchases done by each employee to the central database hosted in a server.
 
-
 # How it works
 ## Syncing databases with the API (Mono-directional)
 For now as of 19/1/2021, Tuesday. A __GET__ request is made to the API (Ideally it should be a POST/PUT request), and the API will compare the difference in the two tables, find the differences and amend it.  
