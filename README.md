@@ -1,5 +1,5 @@
 # Syncing SQLite and MySQL databases.
-The purpose of this syncing is to be able to update the global catalogue of purchases done by each employee to the central database hosted in a server.
+The purpose of this syncing is to be able to update the global catalogue of transactions done by each employee to the central database hosted in a server. To keep track of transactions that are completed, and to verify it's legimatcey, reduce costs. As it is an inherent side effect of syncing two databases.
 
 # How it works
 ## Syncing databases with the API (Mono-directional)
