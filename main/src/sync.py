@@ -27,21 +27,23 @@ class Sync(Resource):
         self.liteCursor = self.liteCon.cursor()
 
     def get(self):
-        self.sqlCursor.execute("SELECT * FROM departments WHERE salesperson = '1'")
+        self.sqlCursor.execute("SELECT * FROM departments WHERE Salesperson = '2'")
         resSql = self.sqlCursor.fetchall()
-        self.liteCursor.execute("SELECT * FROM Departments")
+        self.liteCursor.execute("SELECT * FROM Departments WHERE Salesperson = '2'")
         resLite = self.liteCursor.fetchall()
 
         if len(resSql) == len(resLite):
             return {"message": "No changes."}
+        
 
-        resSql.sort(), resLite.sort()
-        lenResSql = len(resSql)
-        id, depName = resLite[lenResSql]
+        valid = [lite for lite in resLite if lite not in resSql]
+        print(valid)
+        print(resSql)
 
-        sqlQuery = f"INSERT INTO `testing`.`departments` (`DepartmentId`, `DepartmentName`) VALUES ('{id}', '{depName}')"
+        commits = [f"INSERT INTO `testing`.`departments` (`DepartmentId`, `DepartmentName`, `Salesperson`) VALUES ('{id}', '{depName}', '{salesperson}')" for id, depName, salesperson in valid]
 
-        self.sqlCursor.execute(sqlQuery)
+        for commit in commits:
+            self.sqlCursor.execute(commit)
         self.mySql.commit()
 
         return {200: "synced"}
