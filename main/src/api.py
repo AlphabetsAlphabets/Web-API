@@ -51,7 +51,9 @@ class SQL(Resource):
         description = self.cursor.description # Gets all the column names
         desc = [description[c][0] for c, _ in enumerate(description)] # Storing all the column names into a list, previously = (fid, 0, 0, 0) after formatting = fid
         headersAndValues = {k: v for k, v in zip(desc, res[0])} # Dictionary comprehension, with column names (desc) as a key, and the values (res) as its vaue.
-
+        for k in headersAndValues:
+            if headersAndValues[k] == None:
+                headersAndValues[k] = ""
 
         return {200: {"success": headersAndValues}}
 
