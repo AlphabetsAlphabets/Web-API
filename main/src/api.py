@@ -2,9 +2,6 @@
 Full list of external libraries will be found in requirements.txt in the same directory level. Unless Suffixed with local then it comes with
 the default installation
 """
-import json # local
-import requests # pip install requests
-
 from flask import Flask # pip install flask
 from flask_restful import Api, Resource, reqparse # pip install flask-restful
 
@@ -30,11 +27,12 @@ class SQL(Resource):
 
         self.cursor = self.mydb.cursor()
 
-    def get(self, name, hash):
+    def get(self, dep, name, hash):
         """
         GET request works perfectly well. GET requests are done via the url. Take a look at the adding resources
         section for more information
         """
+        print("Department: " + dep)
 
         H = Hash(str(hash))
         hashed = H.encrypt()
@@ -64,8 +62,8 @@ This is for any request, but, is most significant for a GET request. In the seco
 Which means that after the domain name of the website. Add a slash followed by a valid debtor code. And the result, will be returned.
 In the form of JSON.
 """
-api.add_resource(SQL, "/<string:name>/<string:hash>") 
-api.add_resource(Sync, "/sync")
+api.add_resource(SQL, "/get/<string:dep>/<string:name>/<string:hash>") 
+api.add_resource(Sync, "/sync/post")
 api.add_resource(Update, "/update")
 
 @app.route("/") # Default page
