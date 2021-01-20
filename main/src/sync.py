@@ -13,7 +13,8 @@ class Sync(Resource):
     def __init__(self):
         """
         This method will initialise the connection to the mySql database, and the SQLite database. If the SQLite database does not exist when attempting to 
-        connect to it - it will be created. Before it can be accessed.
+        connect to it - it will be created. Before it can be accessed. If the MySQL database does not exist. It will produce a mySqlDatabaseErrorNotFound Exception.
+        But the api will continue to work, without crashing.
         """
         self.mySql = mysql.connector.connect(
             host="localhost", 
@@ -24,8 +25,8 @@ class Sync(Resource):
         """The host, user, password, and database variables will need to be changed accordingly to the host ip of the server, etc."""
         self.sqlCursor = self.mySql.cursor()
     
-        sqliteDb = "D:\python\Web API\main\src\\testingDB.db"
-        self.liteCon = sqlite3.connect(sqliteDb)
+        sqliteDb = "D:\python\Web API\main\src\\testingDB.db" # Path to the local SQLite database stored in the device.
+        self.liteCon = sqlite3.connect(sqliteDb) 
         self.liteCursor = self.liteCon.cursor()
 
         self.args = reqparse.RequestParser()
@@ -33,10 +34,7 @@ class Sync(Resource):
 
 
     def post(self):
-        # TODO: Make the request dynamic, and change it to a PUT/POST request
-        """
-        The new request is must be made dynamic, and the information will be slotted into sqlString and liteString.
-        """
+        """An argument parser is needed, in order to process the data that was passed in."""
         data = self.args.parse_args()
         salesPerson = data["salesperson"]
 
@@ -53,6 +51,10 @@ class Sync(Resource):
             valid = [lite[:-slice] for lite in resLite if lite[:-slice] not in resSql]
 
         else:
+            """
+            There is a possibility of the sql table to be empty and if that occurs it will by pass most checks and precautions made in place to make sure there are no
+            duplicate sets or corrupted data. Before parsing.
+            """
             slice = 2
             valid = [lite[:-2] for lite in resLite]
             commits = [f"INSERT INTO `testing`.`trans` (`debtorcode`, `outstanding`, `amount`, `salesperson`) VALUES ('{debtorCode}', '{outstanding}', '{amount}', '{salesPerson}')" for debtorCode, outstanding, amount, _ in valid]
@@ -61,8 +63,7 @@ class Sync(Resource):
             print("204: No changes")
             return {204: "No changes made, as there are no new entries."}
 
-
-        liteQuery = f"UPDATE `transaction` SET counter = '1' WHERE counter = '0' AND salesperson = '{salesPerson}' AND fbydate >= date('now') - date('now', '-1 day')"
+        liteQuery = f"UPDATE `transaction` SET counter = '1' WHERE counter = '0' AND salesperson = '{salesPerson}' AND fbydate >= date('now', '-1 day')"
         # SELECT * FROM `transaction` WHERE fbydate >= date('now') - date('now', '-1 day') 
         self.liteCursor.execute(liteQuery)
         self.liteCon.commit()
