@@ -2,7 +2,7 @@ from flask import Flask # pip install flask
 from flask_restful import Api, Resource, reqparse # pip install flask-restful
 
 import mysql.connector # pip install mysql-connector-python
-import sqlite3
+import sqlite3 # local
 
 """
 Sync class to use. Refer to api.py and at the line api.add_resource() will be it's trigger. Which will respond to 
@@ -31,7 +31,6 @@ class Sync(Resource):
 
         self.args = reqparse.RequestParser()
         self.args.add_argument("salesperson", type=str)
-
 
     def post(self):
         """An argument parser is needed, in order to process the data that was passed in."""
@@ -75,7 +74,17 @@ class Sync(Resource):
         self.mySql.commit()
 
         print("successfully synced")
-        return {200: "Successfully synced"}
+        return {200: "Successfully synced! Local database scheduled to be updated in 30 minutes."}
+
+    def schedule(self, salesperson):
+        print(f"Scheduled task for salesperson {salesperson}")
+        liteQuery = f"UPDATE `transaction` SET counter = '2' WHERE counter = '1' AND salesperson = '{salesperson}' AND fbydate >= date('now', '-1 day')"
+
+        self.liteCursor.execute(liteQuery)
+        self.liteCon.commit()
+
+        print("Task executed, and completed.")
+
 
 
 
