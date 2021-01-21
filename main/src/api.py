@@ -37,7 +37,8 @@ class SQL(Resource):
         H = Hash(str(hash))
         hashed = H.encrypt()
 
-        sqlQuery = f"SELECT fid, fuser, fpassword, flocation, finvoice, fcomplaint, ffinance, fpersonnel, femail, fcc, ffunction, fleave, fhr, froadtax, ftr, forder, fsalesman, ftele, fwarehouse, fpotato, fcsr, fconnect, fdriver, fdo, fcollection, femp, fic, DATE_FORMAT(findate, \"%Y-%m-%d\") AS findate, DATE_FORMAT(findate, \"%Y-%m-%d\") AS fconfirmdate, fpic, fplace, fname, fwarehouselog, fdsr, fvvip FROM tsc_office.tap WHERE fuser=\'{name}\' AND fpassword=\'{hashed}\'"
+        tableColumns = "fid, fuser, fpassword, flocation, finvoice, fcomplaint, ffinance, fpersonnel, femail, fcc, ffunction, fleave, fhr, froadtax, ftr, forder, fsalesman, ftele, fwarehouse, fpotato, fcsr, fconnect, fdriver, fdo, fcollection, femp, fic, DATE_FORMAT(findate, \"%Y-%m-%d\") AS findate, DATE_FORMAT(findate, \"%Y-%m-%d\") AS fconfirmdate, fpic, fplace, fname, fwarehouselog, fdsr, fvvip"
+        sqlQuery = f"SELECT {tableColumns} FROM tsc_office.tap WHERE fuser=\'{name}\' AND fpassword=\'{hashed}\'"
         self.cursor.execute(sqlQuery)
         res = self.cursor.fetchall() # Formatted to give the text output, a tuple of data. Previous a list of a tuple.
         if res == None:

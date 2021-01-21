@@ -1,5 +1,3 @@
-import sqlite3 # local
-
 from flask import Flask # pip install flask
 from flask_restful import Api, Resource, reqparse # pip install flask-restful
 
