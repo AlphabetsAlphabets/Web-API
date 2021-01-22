@@ -4,7 +4,7 @@ from flask_restful import Api, Resource, reqparse # pip install flask-restful
 import mysql.connector # pip install mysql-connector-python
 import sqlite3 # local
 
-import datetime
+import datetime, time
 
 """
 Sync class to use. Refer to api.py and at the line api.add_resource() will be it's trigger. Which will respond to 
@@ -19,8 +19,8 @@ class Sync(Resource):
         But the api will continue to work, without crashing.
         """
         self.mySql = mysql.connector.connect(
-            host="localhost", 
-            user="root",
+            host="192.168.1.165", 
+            user="testuser123",
             password="YJH030412yjh_g",
             database="testing"
             )
@@ -34,10 +34,14 @@ class Sync(Resource):
         self.args = reqparse.RequestParser()
         self.args.add_argument("salesperson", type=str)
 
-    def post(self):
+        self.again = True
+
+    def post(self, salesPerson=None):
+        startTime = time.time()
         """An argument parser is needed, in order to process the data that was passed in."""
-        data = self.args.parse_args()
-        salesPerson = data["salesperson"]
+        if salesPerson is None:
+            data = self.args.parse_args()
+            salesPerson = data["salesperson"]
 
         valid = self.dataProcessing(salesPerson)
 
@@ -46,12 +50,13 @@ class Sync(Resource):
         commits = [f"INSERT INTO `testing`.`trans` ({columns}) VALUES ('{debtorCode}', '{outstanding}', '{amount}', '{salesPerson}', '{counter}', '{fbydate}')" for debtorCode, outstanding, amount, _, counter, fbydate in valid]
         self.commitData(commits, salesPerson)
 
-        return [{200: "Successfully synced."}]
+        return [{200: f"Successfully synced. Time taken: {time.time() - startTime}"}]
 
     def dataProcessing(self, salesPerson):
         sqlString = f"SELECT * FROM `testing`.`trans` WHERE salesperson = '{salesPerson}'" # This causes an extra element in a tuple in a list
         self.sqlCursor.execute(sqlString) 
         resSql = self.sqlCursor.fetchall()
+        self.limit = len(resSql)
 
         liteString = f"SELECT * FROM `transaction` WHERE salesperson = '{salesPerson}'" 
         self.liteCursor.execute(liteString)
@@ -71,19 +76,31 @@ class Sync(Resource):
         return valid
 
     def verify(self, salesperson):
-        sqlQuery = f"SELECT * FROM `testing`.`trans` WHERE salesperson = {salesperson} AND fbydate = CURDATE() AND counter = 1"
-        liteQuery = f"SELECT * FROM `transaction` WHERE salesperson = {salesperson} and fbydate = date('now') AND counter = 1"
+        sqlQuery = f"SELECT * FROM `testing`.`trans` WHERE salesperson = {salesperson} AND fbydate >= CURDATE() - INTERVAL 3 day AND counter = 1"
+        liteQuery = f"SELECT * FROM `transaction` WHERE salesperson = {salesperson} AND fbydate >= date('now', '-3 day') AND counter = 1" 
 
         self.sqlCursor.execute(sqlQuery)
         self.liteCursor.execute(liteQuery)
 
         resSql, resLite = self.sqlCursor.fetchall(), self.liteCursor.fetchall()
-        if len(resSql) != len(resLite):
-            return [{400: "Rejected"}]
+        if len(resLite) != len(resSql):
+            if self.again:
+                self.again = False
+                self.post(salesperson)
+
+        elif len(resSql) == 0 or len(resLite) == 0:
+            pass
+
+        elif not self.again:
+            return [{"message": "You are currently locked out of the service."}]
+
+        else:
+            return [{"message": "An unexpected error has occured"}]
+
 
     def updateCounter(self, salesperson):
-        liteQuery = f"UPDATE `transaction` SET counter = '2' WHERE counter = '1' AND salesperson = '{salesperson}' AND fbydate >= date('now', '-1 day')"
-        sqlQuery = f"UPDATE `testing`.`trans` SET counter = '2' WHERE counter = '1' AND salesperson = '{salesperson}' AND fbydate >= CURDATE() - INTERVAL 1 day"
+        liteQuery = f"UPDATE `transaction` SET counter = '2' WHERE counter = '1' AND salesperson = '{salesperson}' AND fbydate >= date('now', '-3 day')"
+        sqlQuery = f"UPDATE `testing`.`trans` SET counter = '2' WHERE counter = '1' AND salesperson = '{salesperson}' AND fbydate >= CURDATE() - INTERVAL 3 day"
 
         self.liteCursor.execute(liteQuery)
         self.liteCon.commit()
@@ -92,6 +109,9 @@ class Sync(Resource):
         self.mySql.commit()
 
     def commitData(self, commits, salesPerson):
+        # Final check before updating the counter to a 2
+        self.verify(salesperson=salesPerson)        
+
         liteQuery = f"UPDATE `transaction` SET counter = '1' WHERE counter = '0' AND salesperson = '{salesPerson}' AND fbydate >= date('now', '-1 day')"
         self.liteCursor.execute(liteQuery)
         self.liteCon.commit()
@@ -100,8 +120,6 @@ class Sync(Resource):
             self.sqlCursor.execute(commit)
         self.mySql.commit()
 
-        # Final check before updating the counter to a 2
-        self.verify(salesperson=salesPerson)        
         self.updateCounter(salesperson=salesPerson)
 
 

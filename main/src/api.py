@@ -75,5 +75,9 @@ def hello():
 def password():
     return "Password here: 123"
 
+# @app.route("/sync/post", method=["POST", "PUT"])
+# def sync():
+#     return "Syncing data."
+
 currentHost = host()
 app.run(debug=True, host=currentHost)
