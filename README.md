@@ -30,4 +30,5 @@ Salesperson = "1", "1", "2", "2"
 ```
 It should be noted that the order is sorted by whoever syncs first. And __not__ ordered numerically or alphabetically.
 
-There will be a hidden element that is being tracked called `counter`. It ranges from a minimum score of 0 to 2. Where 0 represents transaction not confirmed, 1 represents synced to the database once. And 2 represents that payment has been received.
+# Explaining the hidden element: counter
+The purpose of the track `counter` is to verify the legitamacy of a transaction. If the number of entries in the SQLite table, and the MySQL table mismatch then foul play is suspected. 
