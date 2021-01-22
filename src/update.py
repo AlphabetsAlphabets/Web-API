@@ -3,6 +3,8 @@ from flask_restful import Api, Resource, reqparse # pip install flask-restful
 
 import mysql.connector # pip install mysql-connector-python
 
+from key import Key
+
 class Update(Resource):
     def __init__(self):
         self.mydb = mysql.connector.connect(
@@ -24,6 +26,7 @@ class Update(Resource):
 
         self.updateArgs = reqparse.RequestParser() 
         self.updateArgs.add_argument("data", type=str)
+        self.updateArgs.add_argument("key", type=str)
 
         """
         The actual argument parsing is done in the two lines as shown above. In this case when a post request is made, JSON data with the key of "data" is expected, and must be present.
@@ -36,7 +39,9 @@ class Update(Resource):
         print("---"*20)
 
         data = self.updateArgs.parse_args()
-        name = data["data"]
+        name, key = data["data"], data["key"]
+        if key != Key().grabber():
+            return [{400: {"message": "Incorrect key"}}]
 
         sqlQuery = f"INSERT INTO `testing`.`apitest` (`names`) VALUES ('{name}')"
 

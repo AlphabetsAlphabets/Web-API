@@ -5,8 +5,7 @@ __pycache__/
 backups/
 reference/
 
-Use.md
-
-main/src/testingDB.db
-main/src/SQLiteTutorialsDB.db
-main/src/test/
+src/testingDB.db
+src/SQLiteTutorialsDB.db
+src/test/
+src/pass.txt
