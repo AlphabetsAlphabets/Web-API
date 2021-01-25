@@ -1,3 +1,3 @@
 from QA.encrypt import Hash
 from QA.ip import host
-from QA.verify import verify
+from QA.key import Key

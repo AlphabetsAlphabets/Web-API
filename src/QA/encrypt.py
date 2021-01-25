@@ -3,6 +3,9 @@ class Hash:
         self.string = string
 
     def encrypt(self):
+        if self.string == None:
+            return {406: "Nothing was given."}
+
         asc = [ord(ch) for ch in self.string] # Converts each individual character to it's ASCII equivalent
         self.encrypted = [int(ASC) * 2 + len(self.string) for ASC in asc] # Doubles the ASCII equivalent of each character then adds the length of the parent string to it.
          # Joins all the encrypted values with '+' symbols
@@ -13,7 +16,6 @@ class Hash:
                 string += str(num)
             else:
                 string += f"{str(num)}+" 
-        
         
         return string
 

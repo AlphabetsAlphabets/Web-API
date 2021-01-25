@@ -3,27 +3,10 @@ from flask_restful import Api, Resource, reqparse # pip install flask-restful
 
 import mysql.connector # pip install mysql-connector-python
 
-from key import Key
+from QA.key import Key
 
 class Update(Resource):
     def __init__(self):
-        host = ["localhost", "192.168.1.165"]
-        user = ["root", "testuser123"]
-        database = ["testing", "testing"]
-        out = 0
-        
-        with open("sql.txt") as f:
-            password = f.readline()
-
-        self.mydb = mysql.connector.connect(
-            host=host[out], 
-            user=user[out],
-            password=password,
-            database=database[out]
-            )
-        
-        self.cursor = self.mydb.cursor()
-        
         """
         The following code is PUT/POST request specific, and this is a guideline for creating future PUT/POST request functions.
 
@@ -34,7 +17,8 @@ class Update(Resource):
 
         self.updateArgs = reqparse.RequestParser() 
         self.updateArgs.add_argument("data", type=str)
-        self.updateArgs.add_argument("key", type=str)
+        self.updateArgs.add_argument("password", type=str)
+        self.updateArgs.add_argument("id", type=str)
 
         """
         The actual argument parsing is done in the two lines as shown above. In this case when a post request is made, JSON data with the key of "data" is expected, and must be present.
@@ -42,14 +26,36 @@ class Update(Resource):
         as that parameter is not expected.
         """
 
+    def startupAndVerify(id, password):
+        """Verify user"""
+        K = Key()
+        key = K.verify(id, password)
+
+        host = ["localhost", "192.168.1.165"]
+        user = ["root", "testuser123"]
+        database = ["testing", "testing"]
+        out = 0
+        
+        with open("sql.txt") as f:
+            password = f.readline()
+
+        mydb = mysql.connector.connect(
+            host=host[out], 
+            user=user[out],
+            password=password,
+            database=database[out]
+            )
+        
+        cursor = mydb.cursor()
+
+        return mydb, cursor 
     def post(self):
+        data = self.updateArgs.parse_args()
+        name, password, id = data["data"], data["password"], data["id"]
+
+        self.mydb, self.cursor = self.startupAndVerify(id, password)
         print("POST: in update")
         print("---"*20)
-
-        data = self.updateArgs.parse_args()
-        name, key = data["data"], data["key"]
-        if key != Key().grabber():
-            return [{400: {"message": "Incorrect key"}}]
 
         sqlQuery = f"INSERT INTO `testing`.`apitest` (`names`) VALUES ('{name}')"
 
