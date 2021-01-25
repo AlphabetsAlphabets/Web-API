@@ -7,11 +7,19 @@ from key import Key
 
 class Update(Resource):
     def __init__(self):
+        host = ["localhost", "192.168.1.165"]
+        user = ["root", "testuser123"]
+        database = ["testing", "testing"]
+        out = 0
+        
+        with open("sql.txt") as f:
+            password = f.readline()
+
         self.mydb = mysql.connector.connect(
-            host="192.168.1.165", # These fields must be changed accordingly
-            user="testuser123",
-            password="YJH030412yjh_g",
-            database="testing"
+            host=host[out], 
+            user=user[out],
+            password=password,
+            database=database[out]
             )
         
         self.cursor = self.mydb.cursor()

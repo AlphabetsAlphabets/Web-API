@@ -1,2 +1,3 @@
-from .encrypt import Hash
-from .ip import host
+from QA.encrypt import Hash
+from QA.ip import host
+from QA.verify import verify

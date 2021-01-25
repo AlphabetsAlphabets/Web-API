@@ -17,7 +17,10 @@ class Hash:
         
         return string
 
-    def decrypt(self, string):
+    def decrypt(self, string = None):
+        if string is None:
+            string = self.string
+
         encrypted = string.split("+")
         # Spilts the encrypted values by the '+' symbols.
         reversed = [int((int(ch) - len(encrypted))/2) for ch in encrypted] # Decrypts it.

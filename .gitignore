@@ -5,7 +5,8 @@ __pycache__/
 backups/
 reference/
 
-src/testingDB.db
+src/files/testingDB.db
 src/SQLiteTutorialsDB.db
 src/test/
-src/pass.txt
+src/files/pass.txt
+src/files/sql.txt
