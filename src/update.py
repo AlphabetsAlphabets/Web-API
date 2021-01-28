@@ -6,7 +6,7 @@ import mysql.connector # pip install mysql-connector-python
 from QA.key import Key
 
 class Update(Resource):
-    def __init__(self):
+    def __init__(self, key):
         """
         The following code is PUT/POST request specific, and this is a guideline for creating future PUT/POST request functions.
 
@@ -20,11 +20,15 @@ class Update(Resource):
         self.updateArgs.add_argument("password", type=str)
         self.updateArgs.add_argument("id", type=str)
 
+        data = self.updateArgs.parse_args()
+        self.name, self.password, self.id = data["data"], data["password"], data["id"]
+
         """
         The actual argument parsing is done in the two lines as shown above. In this case when a post request is made, JSON data with the key of "data" is expected, and must be present.
         If for example you pass in two keys one "data", and another "data2". There will not be an error, however, when trying to access to value the "data2" is pointing to will result in and error,
         as that parameter is not expected.
         """
+        self.key = key
 
     def startupAndVerify(id, password):
         """Verify user"""
@@ -50,14 +54,12 @@ class Update(Resource):
 
         return mydb, cursor 
     def post(self):
-        data = self.updateArgs.parse_args()
-        name, password, id = data["data"], data["password"], data["id"]
 
-        self.mydb, self.cursor = self.startupAndVerify(id, password)
+        self.mydb, self.cursor = self.startupAndVerify(id, self.password)
         print("POST: in update")
         print("---"*20)
 
-        sqlQuery = f"INSERT INTO `testing`.`apitest` (`names`) VALUES ('{name}')"
+        sqlQuery = f"INSERT INTO `testing`.`apitest` (`names`) VALUES ('{self.name}')"
 
         self.cursor.execute(sqlQuery)
         self.mydb.commit()
