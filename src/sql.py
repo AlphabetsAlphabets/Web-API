@@ -27,7 +27,7 @@ class SQL(Resource):
         args = args.parse_args()
         self.no = args["no"]
 
-    def get(self, name, hash, key, dep):
+    def get(self, name: str, hash: str, key: str, dep: str) -> dict:
         """
         GET request works perfectly well. GET requests are done via the url. Take a look at the adding resources
         section for more information
@@ -46,11 +46,11 @@ class SQL(Resource):
             sqlQuery = "SELECT * FROM tsc_office.tap"
             self.cursor.execute(sqlQuery)
             res = self.cursor.fetchall()
-            formattedRes = self.__toList(res)
+            formattedRes = Database().toSerialisable(res)
             for con in formattedRes:
                 for n, v in enumerate(con):
                     if type(v) == decimal.Decimal:
-                        con[n] = self.json_default(v)
+                        con[n] = Database().json_default(v)
                     elif v == None:
                         con[n] = ""
 
@@ -66,23 +66,6 @@ class SQL(Resource):
             res = self.cursor.fetchall() # Formatted to give the text output, a tuple of data. Previous a list of a tuple.
             print(res)
             # return {404: {"error": "Either the username, or password is incorrect."}}
+        keyValuePairs = Database().keyValueParing(self.cursor, res)
 
-        description = self.cursor.description # Gets all the column names
-        desc = [description[c][0] for c, _ in enumerate(description)] # Storing all the column names into a list, previously = (fid, 0, 0, 0) after formatting = fid
-        headersAndValues = {k: v for k, v in zip(desc, res[0])} # Dictionary comprehension, with column names (desc) as a key, and the values (res) as its vaue.
-        for k in headersAndValues:
-            if headersAndValues[k] == None:
-                headersAndValues[k] = ""
-
-        return [{200: {"success": headersAndValues}}]
-
-    def json_default(self, value): 
-        if isinstance(value, decimal.Decimal):
-            return str(float(value)) + "0"
-            # return float(value)
-        raise TypeError('not JSON serializable') #you may choose not to raise the Error though 
-
-    def __toList(self, data):
-        data = [list(c) for c in data]
-
-        return data
+        return [{200: {"success": keyValuePairs}}]

@@ -1,3 +1,4 @@
+from typing import Union
 from flask import Flask # pip install flask
 from flask_restful import Resource, abort # pip install flask-restful
 
@@ -19,7 +20,7 @@ class Key(Resource):
 		
 		self.keyTable, self.keyCursor = Database().connect(host[o], user[o], password[o], database[o])
 
-	def verify(self, user, password):
+	def verify(self, user: str, password: Union[str, int]) -> str:
 		print(password)
 		H = Hash(password)
 		encrypted = H.encrypt()
@@ -36,7 +37,7 @@ class Key(Resource):
 
 		return key[0][0]
 
-	def verifyKey(self, key):
+	def verifyKey(self, key: str) -> None:
 		sqlQuery = f"SELECT * FROM testing.creds WHERE apikey = '{key}'"
 		self.keyCursor.execute(sqlQuery)
 		key = self.keyCursor.fetchall()

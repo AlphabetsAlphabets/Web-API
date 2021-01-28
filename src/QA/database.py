@@ -1,5 +1,6 @@
 import mysql.connector
 import decimal, datetime
+from typing import Iterable, Union 
 from mysql.connector.cursor import MySQLCursor as CURSOR
 
 class Database:
@@ -18,11 +19,12 @@ class Database:
             host = host, user = user, password = password,
             database=  database
         )
+        print(type(connection))
 
         cursor = connection.cursor()
         return connection, cursor
 
-    def json_default(self, value): 
+    def json_default(self, value: Union[decimal.Decimal, datetime.date]) -> str: 
         if isinstance(value, decimal.Decimal):
             return str(float(value)) + "0"
             
@@ -31,7 +33,7 @@ class Database:
 
         raise TypeError('not JSON serializable') #you may choose not to raise the Error though 
 
-    def toSerialisable(self, data):
+    def toSerialisable(self, data: Union[list, tuple]) -> list:
         data = [list(c) for c in data]
 
         return data

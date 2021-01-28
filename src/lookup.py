@@ -14,7 +14,7 @@ class Lookup(Resource):
 
         self.conn, self.cursor = Database().connect(host[o], user[o], password[o].strip("\n"), database[o])
 
-    def get(self, table):
+    def get(self, table: str) -> dict:
         "/lookup/tablename"
         redirect = self.search(table)
         self.cursor.execute(redirect)
@@ -25,7 +25,7 @@ class Lookup(Resource):
 
         return {200: formatted}
 
-    def search(self, table):
+    def search(self, table: str) -> str:
         sqlQuery = f"SELECT * FROM redirect WHERE table_name = '{table}'"
         self.cursor.execute(sqlQuery)
         res = self.cursor.fetchall()

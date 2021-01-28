@@ -1,3 +1,4 @@
+from typing import Union
 from flask import Flask # pip install flask
 from flask_restful import Api, Resource, reqparse, abort # pip install flask-restful
 
@@ -70,7 +71,7 @@ class Sync(Resource):
 
         return [{201: f"Successfully synced. Time taken: {time.time() - startTime}"}]
 
-    def dataProcessing(self, salesPerson):
+    def dataProcessing(self, salesPerson: Union[str, int]) -> list:
         sqlString = f"SELECT * FROM `testing`.`trans` WHERE salesperson = '{salesPerson}' and fbydate >= CURDATE() - INTERVAL 3 day" # This causes an extra element in a tuple in a list
         self.sqlCursor.execute(sqlString) 
         resSql = self.sqlCursor.fetchall()
@@ -117,7 +118,7 @@ class Sync(Resource):
         self.sqlCursor.execute(sqlQuery)
         self.mySql.commit()
 
-    def insertStatement(self, values) -> None:
+    def insertStatement(self, values: list) -> None:
         columns = "`debtorcode`, `outstanding`, `amount`, `salesperson`, `counter`, `fbydate`"
         """Unpacks all the data from each column then inserts them into an insert statement that will be processed in the commitData() function."""
         debtorCode, outstanding, amount, _, counter, fbydate = values
