@@ -1,12 +1,11 @@
 env-api/
 .vscode/
 
-__pycache__/
-backups/
-reference/
+src/QA/__pycache__/
 
-src/files/testingDB.db
-src/SQLiteTutorialsDB.db
+src/__pycache__/
 src/test/
-src/files/pass.txt
-src/files/sql.txt
+src/Files/
+src/control/
+
+src/use.py
