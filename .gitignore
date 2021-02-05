@@ -2,6 +2,7 @@ env-api/Include
 env-api/Lib
 env-api/Scripts
 env-api.pyvenv.cfg
+env-api/__pycache__/
 
 .vscode/
 
@@ -21,3 +22,4 @@ src/test.py
 src/req.py
 
 rollback/
+
