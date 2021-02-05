@@ -22,12 +22,12 @@ class Database:
                 blank += ", " + name
 
         return blank
-                    
+        
     def connect(self, host, user, password, database) -> Union[TYPE_SQL_CONN, TYPE_CURSOR]:
         """Connects to a MySQL database assuming all entered information is valid."""
         connection = mysql.connector.connect(
             host = host, user = user, password = password,
-            database=  database
+            database = database
         )
 
         cursor = connection.cursor()

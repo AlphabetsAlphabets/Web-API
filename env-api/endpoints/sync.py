@@ -41,7 +41,7 @@ class Sync(Resource):
         Key().verifyKey(self.user, key)
 
         try:
-            sqliteDb = "Files\\testingDB.db" # Path to the local SQLite database stored in the device.
+            sqliteDb = "env-api\\endpoints\\databases\\syncDb.db" # Path to the local SQLite database stored in the device.
             self.liteCon = sqlite3.connect(sqliteDb) 
             self.liteCursor = self.liteCon.cursor()
 

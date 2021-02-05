@@ -9,14 +9,12 @@ from flask_restful import Api  # pip install flask-restful
 
 import QA
 
+from endpoints.insert import Insert
 from endpoints.invoice import Invoice
 from endpoints.login import Login
-from endpoints.lookup import Lookup
 from endpoints.sql import SQL  # to sql.py
 from endpoints.sync import Sync  # To sync.py
-from endpoints.update import Update  # to update.py
 from endpoints.spec import Spec
-from endpoints.image import Image
 
 app = Flask(__name__) # Initialisation of a flask app
 api = Api(app) # Initilisation of a RESTful API
@@ -29,14 +27,14 @@ Which means that after the domain name of the website. Add a slash followed by a
 In the form of JSON.
 """
 
+api.add_resource(Insert, "/insert/put")
 api.add_resource(Invoice, "/get/<string:key>/<string:user>/<string:api>/<string:identifier>")
 api.add_resource(Login, "/get/login/<string:user>/<string:password>")
 api.add_resource(Spec, "/get/spec/<string:table>/<string:o1>/<string:o2>/<string:o3>/<string:o4>/<string:o5>") # For external use, no API needed.
 api.add_resource(SQL, "/get/<string:key>/<string:user>/<string:hash>/<string:api>/<string:dep>") 
 api.add_resource(Sync, "/sync/post")
-api.add_resource(Image, "/put/image")
 
-with codecs.open("..\\src\\html\\index.html") as f:
+with codecs.open("html\\index.html") as f:
     lines = f.read()
 
 @app.route("/") # Default page
