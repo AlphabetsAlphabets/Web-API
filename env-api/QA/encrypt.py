@@ -29,4 +29,3 @@ class Hash:
         decrypted = [chr(asciiCharacter) for asciiCharacter in reversed] # Decrupts it to a string
 
         return "".join(decrypted) # returns plain text
-

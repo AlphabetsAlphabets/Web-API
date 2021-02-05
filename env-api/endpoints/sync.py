@@ -1,14 +1,14 @@
+import datetime
+import sqlite3  # local
+import time
 from typing import Union
-from flask import Flask # pip install flask
-from flask_restful import Api, Resource, reqparse, abort # pip install flask-restful
 
-import mysql.connector # pip install mysql-connector-python
-import sqlite3 # local
+import mysql.connector  # pip install mysql-connector-python
+from flask_restful import (Resource, abort,  # pip install flask-restful
+                           reqparse)
 
-import datetime, time
-
-from QA.key import Key
 from QA.database import Database
+from QA.key import Key
 
 table = {"sqlite": "`testing`.`transaction`", "mysql": "`testing`.`trans`"}
 
@@ -22,16 +22,9 @@ class Sync(Resource):
         Makes the POST request accept two arguments: salesperson, and key.
         """
 
-        o = 0
-        """Setting up database connection"""
-        host = ["localhost", "192.168.1.165"]
-        user = ["root", "testuser123"]
-        database = ["testing", "testing"]
-        with open("D:\python\Web API\src\Files\sql.txt") as f:
-            password = f.readlines()
-
         try:
-            self.mySql, self.sqlCursor = Database().connect(host[o], user[o], database[o], password[o])
+            # self.mySql, self.sqlCursor = Database().connect("localhost", "root", "YJH030412yjh_g", "testing")
+            self.mySql, self.sqlCursor = Database().connect("localhost", "root", "8811967", "testing")
         except mysql.connector.errors.InterfaceError:
             abort(400, message="MySQL table not found.")
         
@@ -45,10 +38,10 @@ class Sync(Resource):
         args = self.args.parse_args()
         key, self.salesperson, self.user, self.password, self.department = args["key"], args["salesperson"], args["user"], args["password"], args["department"]
 
-        Key().verifyKey(key)
+        Key().verifyKey(self.user, key)
 
         try:
-            sqliteDb = "D:\python\Web API\src\\files\\testingDB.db" # Path to the local SQLite database stored in the device.
+            sqliteDb = "Files\\testingDB.db" # Path to the local SQLite database stored in the device.
             self.liteCon = sqlite3.connect(sqliteDb) 
             self.liteCursor = self.liteCon.cursor()
 
@@ -66,8 +59,8 @@ class Sync(Resource):
         # columns = "`debtorcode`, `outstanding`, `amount`, `salesperson`, `counter`, `fbydate`"
         # """Unpacks all the data from each column then inserts them into an insert statement that will be processed in the commitData() function."""
         # commits = [f"INSERT INTO `testing`.`trans` ({columns}) VALUES ('{debtorCode}', '{outstanding}', '{amount}', '{self.salesperson}', '{counter}', '{fbydate}')" for debtorCode, outstanding, amount, _, counter, fbydate in valid]
-        self.updateCounter
         list(map(self.insertStatement, valid))
+        self.updateCounter()
 
         return [{201: f"Successfully synced. Time taken: {time.time() - startTime}"}]
 
@@ -88,14 +81,6 @@ class Sync(Resource):
                 if type(columnData) == datetime.date:
                     container[c] = columnData.strftime("%Y-%m-%d")
 
-        liteSet = set(tuple(data) for data in resLite)
-        sqlSet = set(tuple(data) for data in resSql)
-
-        out = liteSet == sqlSet
-
-        if len(resLite) == 0 or out:
-            abort(409, message="Conflict: no new entries made.")
-
         valid = [lite for lite in resLite if lite not in resSql]
         
         return valid
@@ -108,9 +93,8 @@ class Sync(Resource):
         sqlQuery = f"UPDATE `testing`.`trans` SET counter = '1' WHERE counter = '0' AND salesperson = '{self.salesperson}' AND fbydate >= CURDATE() - INTERVAL 3 day"
         self.sqlCursor.execute(sqlQuery)
         self.mySql.commit()
-        """Updates all 1's to 2's signifying that the transactions are valid, and trustworthy."""
-        liteQuery = f"UPDATE `transaction` SET counter = '2' WHERE counter = '1' AND salesperson = '{self.salesperson}' AND fbydate >= date('now', '-3 day')"
 
+        liteQuery = f"UPDATE `transaction` SET counter = '2' WHERE counter = '1' AND salesperson = '{self.salesperson}' AND fbydate >= date('now', '-3 day')"
         self.liteCursor.execute(liteQuery)
         self.liteCon.commit()
 
