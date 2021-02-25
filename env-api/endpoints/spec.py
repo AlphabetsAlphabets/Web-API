@@ -1,23 +1,32 @@
-from flask_restful import Resource, abort
+from flask_restful import Resource, abort, reqparse
 from typing import Union, Iterable
-from QA.database import Database as Db
-from mysql.connector.errors import ProgrammingError
+from QA.database import Database
+from QA.key import Key
 
 """
-This is only relevant if you're using an IDE such as Visual Studio Code(VSC), Visual Studio(VS), PyCharm(PC), etc. Or
-a very powerful text editor like sublime text (sub).
-
-If you don't understand how a function works. Click on the function name then press
-alt + F12(VSC)/F12(sub) to view the function definition to look at the logic. (I do not use PyCharm, and do not know it's associated shortcut.)
-Within the definition there will be doc strings documenting what each function is supposed to do.
-
+Change * in all sql query to selected ones when decided in the future.
 """
 
 class Spec(Resource):
     def __init__(self):
-        self.conn, self.cursor = Db().connect("localhost", "root", "YJH030412yjh_g", "testing")
+        self.schema = "testing"
+        self.conn, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)
+        # self.conn, self.cursor = Database.connect("localhost", "root", "8811967", self.schema)
 
-        self.BASE_QUERY = "SELECT * FROM testing.spec"
+        parser = reqparse.RequestParser()
+        parser.add_argument("key", type=str, location="headers")
+        parser.add_argument("user", type=str, location="headers")
+
+        parsed = parser.parse_args()
+        key, user = parsed["key"], parsed["user"]
+
+        Key().verifyKey(user, key)
+
+        self.BASE_QUERY = f"SELECT * FROM {self.schema}.spec"
+        """
+        Change spec in {self.schema}.spec to the correct table name. For example if the correct table name is invoice, modify it like so:
+        {self.schema}.invoice. Do the same modification in line 71
+        """
 
     def get(self, table: str, o1: Union[str, int], o2: Union[str, int], o3: Union[str, int], o4: Union[str, int], o5: Union[str, int]) -> str:
         """Collects all the parameters into a list. Then filters out unwanted values."""
@@ -42,9 +51,9 @@ class Spec(Resource):
         parameters = {k: v for k, v in zip(names, filteredParams)}
 
         if len(res) == 0:
-            abort(404, message = f"{table} does not exist.")
+            abort(404, message = f"Table with the name {table} does not exist. Check your spelling, and try again.")
 
-        formattedRes = Db().toSerialisable(res)
+        formattedRes = Database().toSerialisable(res)
         conditionals = list(filter(self.removeNone, formattedRes[0]))[2:]
         """Deletes unneeded parameters from the list so it won't be added into a SQL query."""
         for i in noneIndices:
@@ -58,10 +67,10 @@ class Spec(Resource):
             whereQuerySnippets.append(f"{con} = '{v}'")
         
         stitchedWhereQuery= (" AND ").join(whereQuerySnippets)
-        stitchedQuery = f"SELECT * FROM testing.{table} WHERE {stitchedWhereQuery}"
+        stitchedQuery = f"SELECT * FROM {self.schema}.{table} WHERE {stitchedWhereQuery}"
 
         """The part where the api makes another SQL query on your behalf"""
-        _ , redirCursor = Db().connect("localhost", "root", "YJH030412yjh_g", "testing")
+        _ , redirCursor = Database.connect("localhost", "root", "YJH030412yjh_g", "{self.schema}")
         redirCursor.execute(stitchedQuery)
 
         redirRes = redirCursor.fetchall()
@@ -69,22 +78,23 @@ class Spec(Resource):
 
         """Handles the part with more than one result"""
         if lengthOfRedirRes > 1:
-            tempConn, tempCursor = Db().connect("localhost", "root", "YJH030412yjh_g", "testing")
-            silent = tempCursor.execute("SELECT * FROM testing.trans")
-            _ = tempCursor.fetchall()
-            
+            tempConn, tempCursor = Database.connect("localhost", "root", "YJH030412yjh_g", "{self.schema}")
+            silent = tempCursor.execute(f"SELECT * FROM {self.schema}.trans LIMIT 1")
+            res = tempCursor.fetchall()
+            if len(res) == 0:
+                abort(404, message = "Table not found.")
 
-            serialisedRedirRes = Db().formatEntries(redirRes)
+            serialisedRedirRes = Database().formatEntries(redirRes)
 
             return serialisedRedirRes
 
         elif lengthOfRedirRes == 0:
             abort(404, message = "No entries with the specified information found.")
 
-        serialisedRedirRes = Db().formatEntries(redirRes)
+        serialisedRedirRes = Database().formatEntries(redirRes)
 
         """Makes a key value pair to the appriroiate value. For it to be clearer."""
-        keyValuePairOfSerialisedRedirRes = Db().keyValuePairing(redirCursor, serialisedRedirRes)
+        keyValuePairOfSerialisedRedirRes = Database().keyValuePairing(redirCursor, serialisedRedirRes)
 
         return keyValuePairOfSerialisedRedirRes
 

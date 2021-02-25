@@ -1,3 +1,4 @@
+# Schema: testing
 import datetime
 import sqlite3  # local
 import time
@@ -10,104 +11,128 @@ from flask_restful import (Resource, abort,  # pip install flask-restful
 from QA.database import Database
 from QA.key import Key
 
-table = {"sqlite": "`testing`.`transaction`", "mysql": "`testing`.`trans`"}
+# Error types
+from mysql.connector.errors import InterfaceError as TYPE_INTERFACE_ERROR
+
+import os
 
 class Sync(Resource):
     def __init__(self):
         """
-        This method will initialise the connection to the mySql database, and the SQLite database. If the SQLite database does not exist when attempting to 
-        connect to it - it will be created. Before it can be accessed. If the MySQL database does not exist. It will produce a mySqlDatabaseErrorNotFound Exception.
-        But the api will continue to work, without crashing.
-
-        Makes the POST request accept two arguments: salesperson, and key.
+        When a new POST request is made, an instance of Sync is spawned immediately, and automatically which connects to a MySQL database on the server, 
+        and a local SQLite database. 
+        """
+        self.schema = "testing"
+        self.table = "trans"
+        try:
+            # self.sqlConn, self.sqlCursor = Database().connect("localhost", "root", "8811967", "tsc_office")
+            self.sqlConn, self.sqlCursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)
+        except TYPE_INTERFACE_ERROR:
+            abort(400, message="MySQL table not found. Or connection denied, check credentials")
+        
+        """
+        These are the arguments the Sync endpoint will accept. If a request is sent through postman (Google it if you don't know what it is), it doesn't matter if
+        its from the 'Params' tab or a 'Body' tab. The only difference is the parameters will show up in the url if you choose 'Params', and it won't
+        shop up if you choose 'Body'
         """
 
-        try:
-            # self.mySql, self.sqlCursor = Database().connect("localhost", "root", "YJH030412yjh_g", "testing")
-            self.mySql, self.sqlCursor = Database().connect("localhost", "root", "8811967", "testing")
-        except mysql.connector.errors.InterfaceError:
-            abort(400, message="MySQL table not found.")
-        
-        self.args = reqparse.RequestParser()
-        self.args.add_argument("key", type=str)
-        self.args.add_argument("salesperson", type=str)
-        self.args.add_argument("user", type=str)
-        self.args.add_argument("password", type=str)
-        self.args.add_argument("department", type=str)
+        parser = reqparse.RequestParser()
+        parser.add_argument("key", type=str, location='headers')
+        parser.add_argument("user", type=str, location='headers')
 
-        args = self.args.parse_args()
-        key, self.salesperson, self.user, self.password, self.department = args["key"], args["salesperson"], args["user"], args["password"], args["department"]
+        parsed = parser.parse_args()
+        key, user = parsed["key"], parsed["user"]
 
-        Key().verifyKey(self.user, key)
+
+        Key().verifyKey(user, key) # add key, user
 
         try:
+<<<<<<< HEAD
             sqliteDb = "env-api\\endpoints\\databases\\syncDb.db" # Path to the local SQLite database stored in the device.
             self.liteCon = sqlite3.connect(sqliteDb) 
+=======
+            print("connecting to sqlite3")
+            os.chdir("..\\env-api\\endpoints\\databases")
+            PATH = os.getcwd() + "\\syncDb.db"
+
+            self.liteCon = sqlite3.connect(PATH) 
+>>>>>>> b96324ce21cc65cc8aaec772c77625dd8f039be6
             self.liteCursor = self.liteCon.cursor()
 
-        except sqlite3.OperationalError:
-            abort(400, message="local SQLITE table not found. Try again, one should be created now.")
+        except FileNotFoundError as e:
+            if e == FileNotFoundError:
+                error = e.strerror
+                abort(400, message=f"{error}. One should be created now. Try again.")
 
-    def post(self):
-        """An argument parser is needed, in order to process the data that was passed in."""
+    def __join(self, *values: list) -> Union[str, int]:
+        """
+        Strips all whitespace in front, and after the conditions. To make it cleaner, spaces between words will not be stripped.
+        Add quotes to all values, then joins them all with ", " between each word.
+        """
+        strippedValues = [str(value).strip() for value in values if len(str(value).strip()) != 0]
+        quotedValues = [f"'{value}'" for value in strippedValues]
+        joinedValues = (", ").join(quotedValues)
 
-        startTime = time.time()
+        return joinedValues
 
-        """Stops the user from proceeding without the correct key, most likely subject to change."""
-        valid = self.dataProcessing(self.salesperson)
-        # Updating the databases starts here
-        # columns = "`debtorcode`, `outstanding`, `amount`, `salesperson`, `counter`, `fbydate`"
-        # """Unpacks all the data from each column then inserts them into an insert statement that will be processed in the commitData() function."""
-        # commits = [f"INSERT INTO `testing`.`trans` ({columns}) VALUES ('{debtorCode}', '{outstanding}', '{amount}', '{self.salesperson}', '{counter}', '{fbydate}')" for debtorCode, outstanding, amount, _, counter, fbydate in valid]
-        list(map(self.insertStatement, valid))
-        self.updateCounter()
+    def put(self, salesperson):
+        self.person = salesperson
+        
+        valid = self.__dataProcessing()
+        list(map(self.__insertStatement, valid))
+        self.__updateCounter()
 
-        return [{201: f"Successfully synced. Time taken: {time.time() - startTime}"}]
+        return [{201: f"Successfully synced."}]
 
-    def dataProcessing(self, salesPerson: Union[str, int]) -> list:
-        sqlString = f"SELECT * FROM `testing`.`trans` WHERE salesperson = '{salesPerson}' and fbydate >= CURDATE() - INTERVAL 3 day" # This causes an extra element in a tuple in a list
+    def __dataProcessing(self) -> Union[list, None]:
+        sqlString = f"SELECT * FROM {self.schema}.{self.table} WHERE salesperson = '{self.person}' and fbydate >= CURDATE() - INTERVAL 3 day" # This causes an extra element in a tuple in a list
         self.sqlCursor.execute(sqlString) 
         resSql = self.sqlCursor.fetchall()
 
-        liteString = f"SELECT * FROM `transaction` WHERE salesperson = '{salesPerson}' and fbydate >= date('now', '-3 days')" 
-        self.liteCursor.execute(liteString)
-        resLite = self.liteCursor.fetchall()
+        try:
+            liteString = f"SELECT * FROM `transaction` WHERE salesperson = '{self.person}' and fbydate >= date('now', '-3 days')"
+            self.liteCursor.execute(liteString)
+            resLite = self.liteCursor.fetchall()
 
-        resSql = [list(columnData) for columnData in resSql]
-        resLite = [list(columnData) for columnData in resLite]
+        except Exception as e:
+            print(e)
+            abort(404, message = "SQLite3 table not found.")
+
+        if len(resSql) == len(resLite) and (len(resLite) != 0):
+            abort(403, message = "Cannot make duplicate entries.")
+
+        elif len(resLite) == 0:
+            abort(403, message = "You have zero entries.")
+
         
-        for container in resSql:
-            for c, columnData in enumerate(container):
-                if type(columnData) == datetime.date:
-                    container[c] = columnData.strftime("%Y-%m-%d")
+        resSql = Database().formatEntries(resSql)
 
         valid = [lite for lite in resLite if lite not in resSql]
         
         return valid
 
-    def updateCounter(self) -> None:
-        liteQuery = f"UPDATE `transaction` SET counter = '1' WHERE counter = '0' AND salesperson = '{self.salesperson}' AND fbydate >= date('now', '-3 day')"
+    def __updateCounter(self) -> None:
+        liteQuery = f"UPDATE `transaction` SET counter = '1' WHERE counter = '0' AND salesperson = '{self.person}' AND fbydate >= date('now', '-3 day')"
         self.liteCursor.execute(liteQuery)
         self.liteCon.commit()
 
-        sqlQuery = f"UPDATE `testing`.`trans` SET counter = '1' WHERE counter = '0' AND salesperson = '{self.salesperson}' AND fbydate >= CURDATE() - INTERVAL 3 day"
+        sqlQuery = f"UPDATE {self.schema}.{self.table} SET counter = '1' WHERE counter = '0' AND salesperson = '{self.person}' AND fbydate >= CURDATE() - INTERVAL 3 day"
         self.sqlCursor.execute(sqlQuery)
-        self.mySql.commit()
+        self.sqlConn.commit()
 
-        liteQuery = f"UPDATE `transaction` SET counter = '2' WHERE counter = '1' AND salesperson = '{self.salesperson}' AND fbydate >= date('now', '-3 day')"
+        liteQuery = f"UPDATE `transaction` SET counter = '2' WHERE counter = '1' AND salesperson = '{self.person}' AND fbydate >= date('now', '-3 day')"
         self.liteCursor.execute(liteQuery)
         self.liteCon.commit()
 
-        sqlQuery = f"UPDATE `testing`.`trans` SET counter = '2' WHERE counter = '1' AND salesperson = '{self.salesperson}' AND fbydate >= CURDATE() - INTERVAL 3 day"
+        sqlQuery = f"UPDATE {self.schema}.{self.table} SET counter = '2' WHERE counter = '1' AND salesperson = '{self.person}' AND fbydate >= CURDATE() - INTERVAL 3 day"
         self.sqlCursor.execute(sqlQuery)
-        self.mySql.commit()
+        self.sqlConn.commit()
 
-    def insertStatement(self, values: list) -> None:
-        columns = "`debtorcode`, `outstanding`, `amount`, `salesperson`, `counter`, `fbydate`"
-        """Unpacks all the data from each column then inserts them into an insert statement that will be processed in the commitData() function."""
-        debtorCode, outstanding, amount, _, counter, fbydate = values
-        sqlQuery = f"INSERT INTO `testing`.`trans` ({columns}) VALUES ('{debtorCode}', '{outstanding}', '{amount}', '{self.salesperson}', '{counter}', '{fbydate}')"
+    def __insertStatement(self, values) -> None:
+        columns = Database.columnNamesForInsert(self.sqlCursor)
+        quotedValues = self.__join(*values)
+        sqlQuery = f"INSERT INTO {self.schema}.{self.table} ({columns}) VALUES ({quotedValues})"
 
         self.sqlCursor.execute(sqlQuery)
-        self.mySql.commit()
+        self.sqlConn.commit()
     
