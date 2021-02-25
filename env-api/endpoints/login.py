@@ -18,4 +18,4 @@ class Login(Resource):
 
         fid = self.tapCursor.fetchall()[0][4]
 
-        return [{200: {"fid": fid, "key": k}}]
+        return {"fid": fid, "key": k}

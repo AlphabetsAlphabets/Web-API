@@ -18,6 +18,7 @@ import QA
 from endpoints.insertGeneric import InsertGeneric
 from endpoints.login import Login
 from endpoints.upload import Upload
+from endpoints.mock import Mock
 
 app = Flask(__name__) # Initialisation of a flask app
 api = Api(app) # Initilisation of a RESTful API
@@ -38,7 +39,8 @@ In the form of JSON.
 # api.add_resource(Spec, "/get/spec/<string:table>/<string:o1>/<string:o2>/<string:o3>/<string:o4>/<string:o5>")
 api.add_resource(InsertGeneric, "/redirect/<string:table>/<string:invoiceno>")
 api.add_resource(Login, "/<string:user>/<string:password>")
-api.add_resource(Upload, "/upload/<string:name>")
+api.add_resource(Upload, "/upload/<string:saveName>")
+api.add_resource(Mock , "/mock/<string:third>")
 
 @app.route("/") # Default page
 def hello():
@@ -50,4 +52,4 @@ def password():
 
 if __name__ == "__main__":
     currentHost = socket.gethostbyname(socket.gethostname())
-    app.run(host=currentHost)
+    app.run(debug = True, host=currentHost)

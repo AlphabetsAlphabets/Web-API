@@ -17,12 +17,15 @@ class Key(Resource):
 			abort(503, message="Unable to connect to database. Check your credentials.")
 
 	def getKey(self, user: str, password: Union[str, int]) -> str:
+		print(f"Params: user {user}, password {password}")
 		"""Checks to see if the password matches the one in the database. If it does then it returns
 		a key and an auth level. If not, throws an error."""
 
 		encrypted = Hash.encrypt(password)
+		print(f"Encrypted: {encrypted}")
 
 		sqlQuery = f"SELECT * FROM {self.schema}.{self.table} WHERE user = '{user}' AND password = '{encrypted}'"
+		print(f"SQL Query: {sqlQuery}")
 		self.keyCursor.execute(sqlQuery)
 		key = self.keyCursor.fetchall()
 

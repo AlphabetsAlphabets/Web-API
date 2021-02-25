@@ -5,6 +5,7 @@ env-api.pyvenv.cfg
 env-api/__pycache__/
 
 .vscode/
+.vs/
 
 src/QA/__pycache__/
 src/__pycache__/

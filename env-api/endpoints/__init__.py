@@ -6,3 +6,4 @@ from endpoints.sync import Sync
 from endpoints.update import Update
 from endpoints.insertGeneric import InsertGeneric
 from endpoints.upload import Upload
+from endpoints.mock import Mock
