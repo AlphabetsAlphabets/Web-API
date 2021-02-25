@@ -1,20 +1,24 @@
 """
-Full list of external libraries will be found in requirements.txt in the same directory level. Unless Suffixed with local then it comes with
-the default installation
+Check requirements.txt for library details.
 """
-import codecs  # local
+# TODO: error handing during execute of sql queries, whether it be sqLITE or MySQL
 
-from flask import Flask, session  # pip install flask
-from flask_restful import Api  # pip install flask-restful
+from flask import Flask, session
+from flask_restful import Api 
+
+import os
+import socket
 
 import QA
 
-from endpoints.insert import Insert
-from endpoints.invoice import Invoice
+# from endpoints.tap import Tap
+# from endpoints.tinvoicehistory import TInvoiceHistory
+# from endpoints.sync import Sync
+# from endpoints.spec import Spec
+from endpoints.insertGeneric import InsertGeneric
 from endpoints.login import Login
-from endpoints.sql import SQL  # to sql.py
-from endpoints.sync import Sync  # To sync.py
-from endpoints.spec import Spec
+from endpoints.upload import Upload
+from endpoints.mock import Mock
 
 app = Flask(__name__) # Initialisation of a flask app
 api = Api(app) # Initilisation of a RESTful API
@@ -27,23 +31,25 @@ Which means that after the domain name of the website. Add a slash followed by a
 In the form of JSON.
 """
 
-api.add_resource(Insert, "/insert/put")
-api.add_resource(Invoice, "/get/<string:key>/<string:user>/<string:api>/<string:identifier>")
-api.add_resource(Login, "/get/login/<string:user>/<string:password>")
-api.add_resource(Spec, "/get/spec/<string:table>/<string:o1>/<string:o2>/<string:o3>/<string:o4>/<string:o5>") # For external use, no API needed.
-api.add_resource(SQL, "/get/<string:key>/<string:user>/<string:hash>/<string:api>/<string:dep>") 
-api.add_resource(Sync, "/sync/post")
-
-with codecs.open("html\\index.html") as f:
-    lines = f.read()
+# Commented out means fixed
+# Add key, and user params to all url's except spec, and login for key validation.
+# api.add_resource(Tap, "/tap/<string:user>/<string:hash>")
+# api.add_resource(TInvoiceHistory, "/get/tinvoicehistory/<string:invoiceNumber>")
+# api.add_resource(Sync, "/sync/<string:salesperson>")
+# api.add_resource(Spec, "/get/spec/<string:table>/<string:o1>/<string:o2>/<string:o3>/<string:o4>/<string:o5>")
+api.add_resource(InsertGeneric, "/redirect/<string:table>/<string:invoiceno>")
+api.add_resource(Login, "/<string:user>/<string:password>")
+api.add_resource(Upload, "/upload/<string:saveName>")
+api.add_resource(Mock , "/mock/<string:third>")
 
 @app.route("/") # Default page
 def hello():
-    return lines
+    return "API of TSC"
 
 @app.route("/password")
 def password():
     return "Password here: 123"
 
-currentHost = QA.host()
-app.run(debug=True, host=currentHost)
+if __name__ == "__main__":
+    currentHost = socket.gethostbyname(socket.gethostname())
+    app.run(debug = True, host=currentHost)

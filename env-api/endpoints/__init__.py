@@ -4,3 +4,6 @@ from endpoints.spec import Spec
 from endpoints.sql import SQL
 from endpoints.sync import Sync
 from endpoints.insert import Insert
+from endpoints.upload import Upload
+from endpoints.insertGeneric import InsertGeneric
+from endpoints.mock import Mock
