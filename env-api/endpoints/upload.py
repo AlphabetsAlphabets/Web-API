@@ -86,18 +86,22 @@ class Upload(Resource):
         imageSave = os.getcwd() + f"\\{saveName}.jpg"
 
         rawImage = Image.open(image.stream)
+
         dim = (int(rawImage.width), int(rawImage.height))
 
         newDim = self.__resize(dim)
 
-        resized = rawImage.resize(newDim, Image.ANTIALIAS)
-        resized.save(imageSave)
+        try:
+            resized = rawImage.resize(newDim, Image.ANTIALIAS)
+            resized.save(imageSave)
+        except OSError:
+            resized.convert("RGB").save(imageSave)
 
         # add path to my sql
         pathToImage = (os.getcwd() + f"\\{saveName}.jpg").split("\\")
         sqlCompliantPath = ("/").join(pathToImage)
 
-        sqlQuery = f"INSERT INTO {self.schema}.{self.table} (`image name`, `image path`) VALUES ('{image.name}', '{sqlCompliantPath}')"
+        sqlQuery = f"INSERT INTO {self.schema}.{self.table} (`image name`, `image path`) VALUES ('{saveName}', '{sqlCompliantPath}')"
         self.cursor.execute(sqlQuery)
         self.conn.commit()
 

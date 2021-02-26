@@ -47,16 +47,13 @@ class Sync(Resource):
         Key().verifyKey(user, key) # add key, user
 
         try:
-<<<<<<< HEAD
             sqliteDb = "env-api\\endpoints\\databases\\syncDb.db" # Path to the local SQLite database stored in the device.
             self.liteCon = sqlite3.connect(sqliteDb) 
-=======
             print("connecting to sqlite3")
             os.chdir("..\\env-api\\endpoints\\databases")
             PATH = os.getcwd() + "\\syncDb.db"
 
             self.liteCon = sqlite3.connect(PATH) 
->>>>>>> b96324ce21cc65cc8aaec772c77625dd8f039be6
             self.liteCursor = self.liteCon.cursor()
 
         except FileNotFoundError as e:

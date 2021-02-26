@@ -11,27 +11,6 @@ from mysql.connector.connection import MySQLConnection as TYPE_SQL_CONN
 from mysql.connector.errors import ProgrammingError as E_PROGRAMMING_ERROR
 
 class Database:
-<<<<<<< HEAD
-    def getColumnNames(names: list) -> str:
-        """Takes in a list of column names, and stiches them together to form a string of all the column names."""
-        blank = ""
-        for name in names:
-            if name == names[0]:
-                blank += name
-            elif name == names[-1]:
-                blank += ", " + name
-            else:
-                blank += ", " + name
-
-        return blank
-        
-    def connect(self, host, user, password, database) -> Union[TYPE_SQL_CONN, TYPE_CURSOR]:
-        """Connects to a MySQL database assuming all entered information is valid."""
-        connection = mysql.connector.connect(
-            host = host, user = user, password = password,
-            database = database
-        )
-=======
     def connect(host: str, user: str, password: str, database: str) -> Union[TYPE_SQL_CONN, TYPE_CURSOR]:
         """Connects to a MySQL database assuming all entered information is valid."""
         try:
@@ -45,7 +24,6 @@ class Database:
             errno = e.errno
             if errno != 1049:
                 abort(404, message=f"Database '{database}' does not exist.")
->>>>>>> b96324ce21cc65cc8aaec772c77625dd8f039be6
 
         return connection, cursor
 
