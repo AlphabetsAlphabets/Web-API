@@ -18,6 +18,7 @@ src/test/
 src/Files/
 src/control/
 
+src/images/
 src/hold.py
 src/use.py
 src/test.py

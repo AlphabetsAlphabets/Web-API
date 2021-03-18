@@ -5,7 +5,6 @@ from QA.key import Key
 from QA.database import Database
 
 # Errors
-from mysql.connector.errors import InterfaceError as TYPE_INTERFACE_ERROR
 from mysql.connector.errors import ProgrammingError as TYPE_PROGRAMMING_ERROR
 from mysql.connector.errors import DataError as TYPE_DATA_ERROR
 
@@ -42,6 +41,6 @@ class Update(Resource):
             self.cursor.execute(sqlQuery)
             self.conn.commit()
         except (TYPE_DATA_ERROR, TYPE_PROGRAMMING_ERROR):
-            abort(400, message = "Bad syntax. Make sure your date format is in YYYY-MM-DD. i.e. 2021-01-01 not 2021-1-1")
+            abort(400, message = "Make sure your date format is in YYYY-MM-DD. i.e. 2021-01-01 not 2021-1-1")
 
-        return {200: {"success": "New Entry Added"}}
+        return {200: "New Entry Added"}

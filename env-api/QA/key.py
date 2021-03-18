@@ -6,7 +6,11 @@ from mysql.connector.errors import ProgrammingError
 from QA.database import Database
 from QA.encrypt import Hash
 
-"""A request to this is made when a new user is created."""
+"""
+Add a new column to the table tsc_office.tap, called api key or something similar. So there is no need to create a new table when verifying a user's
+api key
+"""
+
 class Key(Resource):
 	def __init__(self):
 		self.schema = "testing"
@@ -44,6 +48,10 @@ class Key(Resource):
 
 		realKey = self.keyCursor.fetchall()
 		if len(realKey) == 0:
-			abort(406, message = f"Invalid API key for user: {user}")
+			abort(406, message = f"Invalid API key for user: {user}", inside="key.py")
+
 		elif key == realKey[0][0]:
 			return True
+
+		else:
+			return False

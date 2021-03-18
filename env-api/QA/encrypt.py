@@ -1,3 +1,4 @@
+"""Use this class to encrypt an api key, to decrypt the api key when verifying the key"""
 class Hash:
     def encrypt(string):
         asc = [ord(ch) for ch in string] # Converts each individual character to it's ASCII equivalent

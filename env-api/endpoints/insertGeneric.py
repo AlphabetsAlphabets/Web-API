@@ -6,22 +6,22 @@ from QA.key import Key
 from typing import NoReturn, Union
 
 from mysql.connector.cursor import MySQLCursor as TYPE_CURSOR
-"""
-This is for many tables. Pivot conditionals must change accordingly. 
-As of 15/2/2021 this can't actually function because the responsible table does not exist.
-"""
 
 """
-IMPORTANT!
+    My personal opinion is that this endpoint should not exist at all. The best practice is one endpoint for one data base table.
+    Not one generic one for a few of them. Because it's how api endpoint's work. They don't serve as a general purpose tool, but instead
+    they serve a set of specific related tasks. 
 
-Prerequisites:
-1. At line 26 change self.schema to the appropriate schema/database name
-2. go to line 107 and read the doc-string
+    If the argument is that you will need to write a lot of endpoints if someone from high up the hierarchy demands a new feature 
+    then you'll need to create a lot of endpoints. Which is why a generic one is best.
+
+    But conventions must be followed to increase maintainability. The challenge of writing an endpoint with a general purpose is not
+    only difficult, but hard to maintain.
 """
 
 class InsertGeneric(Resource):
+    """Makes an insert statement to the sql database, the statement is constructed through the url. Login required."""
     def __init__(self):
-        self.schema = "testing"
 
         parser = reqparse.RequestParser()
         parser.add_argument("con1", type=str)
@@ -37,14 +37,17 @@ class InsertGeneric(Resource):
         Key().verifyKey(user, key)
 
         """A redirect table of some sort is needed. Refer to testing.redirect for a guide."""
-        self.conn, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", "testing")
-        # self.conn, self.cursor = Database.connect("localhost", "root", "8811967", "tsc_office")
+        try:
+            self.conn, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", "testing")
+            self.schema = "testing"
+        except Exception:
+            self.conn, self.cursor = Database.connect("localhost", "root", "8811967", "tsc_office")
+            self.schema = "tsc_office"
 
     def __validateDatabase(self, cursor: TYPE_CURSOR, table: str) -> str:
         """
-        Checks whether the table you are trying to add a new entry to exists, and has the 'insert' type. 
-        If it doesn't exist a 404 not found error will be thrown. If it doesn't have the 'insert' type,
-        a 403 forbidden error will be thrown instead.
+        Checks whether the table you are trying to add a new entry to exists, if not throws a 404 not found
+        exception.
         """
         sqlQuery = f"SELECT `sql_query` FROM testing.redirect WHERE table_name = '{table}'"
         self.cursor.execute(sqlQuery)
@@ -85,8 +88,10 @@ class InsertGeneric(Resource):
         formattedColumnNames = [columnName.strip(")").strip() for columnName in columnNames]
         joinedColumnNames = (", ").join(formattedColumnNames)
 
-        redirConn, redirCursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)# Change database
-        # redirConn, redirCursor = Database.connect("localhost", "root", "8811967", self.schema)
+        try:
+            redirConn, redirCursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)# Change database
+        except Exception:
+            redirConn, redirCursor = Database.connect("localhost", "root", "8811967", self.schema)
 
         silentQuery = f"SELECT * FROM testing.{table} LIMIT 1"
         redirCursor.execute(silentQuery)
@@ -105,8 +110,8 @@ class InsertGeneric(Resource):
             sqlQuery = f"INSERT INTO {self.schema}.{table} ({joinedColumnNames}) VALUES ({quotedValues})"
 
         """Uncomment (remove the hashtags from) the next two lines when the prerequisites have been setup."""
-        # redirCursor.execute(sqlQuery)
-        # redirConn.commit()
+        redirCursor.execute(sqlQuery)
+        redirConn.commit()
 
         return {201: "successfully added a new entry.", "query" : sqlQuery}
 

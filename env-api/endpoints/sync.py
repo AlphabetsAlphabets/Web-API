@@ -1,7 +1,5 @@
 # Schema: testing
-import datetime
 import sqlite3  # local
-import time
 from typing import Union
 
 import mysql.connector  # pip install mysql-connector-python
@@ -22,13 +20,14 @@ class Sync(Resource):
         When a new POST request is made, an instance of Sync is spawned immediately, and automatically which connects to a MySQL database on the server, 
         and a local SQLite database. 
         """
-        self.schema = "testing"
-        self.table = "trans"
         try:
-            # self.sqlConn, self.sqlCursor = Database().connect("localhost", "root", "8811967", "tsc_office")
             self.sqlConn, self.sqlCursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)
+            self.schema = "testing"
+            self.table = "trans"
         except TYPE_INTERFACE_ERROR:
-            abort(400, message="MySQL table not found. Or connection denied, check credentials")
+            self.sqlConn, self.sqlCursor = Database().connect("localhost", "root", "8811967", "tsc_office")
+            self.schema = "tsc_office"
+            self.table = ""
         
         """
         These are the arguments the Sync endpoint will accept. If a request is sent through postman (Google it if you don't know what it is), it doesn't matter if
@@ -44,7 +43,8 @@ class Sync(Resource):
         key, user = parsed["key"], parsed["user"]
 
 
-        Key().verifyKey(user, key) # add key, user
+        verified = Key().verifyKey(user, key) # add key, user
+        abort(406, message="Invalid credentials", code=406, inside="sync.py") if verified == False else ""
 
         try:
             sqliteDb = "env-api\\endpoints\\databases\\syncDb.db" # Path to the local SQLite database stored in the device.
@@ -57,9 +57,8 @@ class Sync(Resource):
             self.liteCursor = self.liteCon.cursor()
 
         except FileNotFoundError as e:
-            if e == FileNotFoundError:
-                error = e.strerror
-                abort(400, message=f"{error}. One should be created now. Try again.")
+            error = e.strerror
+            abort(400, message=f"{error}. One should be created now. Try again.")
 
     def __join(self, *values: list) -> Union[str, int]:
         """

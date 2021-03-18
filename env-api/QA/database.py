@@ -11,19 +11,19 @@ from mysql.connector.connection import MySQLConnection as TYPE_SQL_CONN
 from mysql.connector.errors import ProgrammingError as E_PROGRAMMING_ERROR
 
 class Database:
-    def connect(host: str, user: str, password: str, database: str) -> Union[TYPE_SQL_CONN, TYPE_CURSOR]:
+    def connect(host: str, user: str, password: str, schema_name: str) -> Union[TYPE_SQL_CONN, TYPE_CURSOR]:
         """Connects to a MySQL database assuming all entered information is valid."""
         try:
             connection = mysql.connector.connect(
                 host = host, user = user, password = password,
-                database = database, auth_plugin="mysql_native_password"
+                database = schema_name, auth_plugin="mysql_native_password"
             )
             cursor = connection.cursor()
 
         except E_PROGRAMMING_ERROR as e:
             errno = e.errno
             if errno != 1049:
-                abort(404, message=f"Database '{database}' does not exist.")
+                abort(404, message=f"Database '{schema_name}' does not exist.")
 
         return connection, cursor
 

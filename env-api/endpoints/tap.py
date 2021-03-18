@@ -2,19 +2,20 @@
 from flask_restful import abort, Resource, reqparse # pip install flask-restful
 
 from QA.key import Key
+from QA.encrypt import Hash
 from QA.database import Database
 
-import decimal # local
 from mysql.connector.errors import ProgrammingError
 
 class Tap(Resource):
+    """Gets information about a specific user. Requires login."""
     def __init__(self):
         self.schema = "tsc_office"
         try:
             self.mydb, self.cursor = Database().connect("localhost", "root", "YJH030412yjh_g", self.schema)
             # self.mydb, self.cursor = Database().connect("localhost", "root", "8811967", self.schema)
 
-        except ProgrammingError as err:
+        except ProgrammingError:
             abort(503, message="Unable to connect to database.")
 
         parser = reqparse.RequestParser()
@@ -24,13 +25,16 @@ class Tap(Resource):
         parsed = parser.parse_args()
         key, user = parsed["key"], parsed["user"]
 
-        Key().verifyKey(user, key)
+        verified = Key().verifyKey(user, key)
+        abort(404, message="Invalid credentials.") if verified == False else ""
 
     def get(self, user, hash):
         """
         GET request works perfectly well. GET requests are done via the url. Take a look at the adding resources
         section for more information
         """
+        hashed = Hash.encrypt(hash)
+        
         tableColumns = "fid, fuser, fpassword, flocation, finvoice, fcomplaint, ffinance, fpersonnel, femail, fcc, ffunction, fleave, fhr, froadtax, ftr, forder, fsalesman, ftele, fwarehouse, fpotato, fcsr, fconnect, fdriver, fdo, fcollection, femp, fic, DATE_FORMAT(findate, \"%Y-%m-%d\") AS findate, DATE_FORMAT(findate, \"%Y-%m-%d\") AS fconfirmdate, fpic, fplace, fname, fwarehouselog, fdsr, fvvip"
         sqlQuery = f"SELECT {tableColumns} FROM {self.schema}.tap WHERE fuser=\'{user}\' AND fpassword=\'{hashed}\'"
 
