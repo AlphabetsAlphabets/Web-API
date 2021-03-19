@@ -82,8 +82,11 @@ class Example:
     """This class provides functions to add, and divide
 
     # Functions
-    - add (private)
+    ### public
     - subtract 
+
+    ### private
+    - add 
     """
 
     def __add(self, number1: Union[int, float], number2: Union[int, float]) -> Union[int, float]:
@@ -119,6 +122,15 @@ class Example:
 
         # Exceptions
         - ZeroDivisionError: This occurs when you divide by 0
+
+        ---
+
+        # Example(s)
+        ```python3
+        num1 = 2
+        num2 = 2
+        result = Example().divide(num1, num2)
+        print(result) # 1
         """
         try:
             return number1 / number2
@@ -127,7 +139,7 @@ class Example:
 ```
 Make sure to include a brief summary about what the class does, and list down all their class functions. And always make sure to include a brief summary about the class and function first.
 
-Then in each function, give a brief description, followed by a brief explanation for each parameter, and if the function has a chance to throw an exception include an exception section as well. And if the function is private make sure to include it in parenthesis.
+Then in each function, give a brief description, followed by a brief explanation for each parameter, and if the function has a chance to throw an exception include an exception section as well. Optionally an examples section, to illustrate what the function does in greater detail. Or to act as supporting evidence.
 
 Separate each section with three `-`'s 
 

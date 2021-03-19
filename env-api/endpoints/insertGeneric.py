@@ -21,8 +21,20 @@ from mysql.connector.cursor import MySQLCursor as TYPE_CURSOR
 """
 
 class InsertGeneric(Resource):
-    """Makes an insert statement to the sql database, the statement is constructed through the url. Login required."""
+    """Makes an insert statement to the sql database, the statement is constructed through the url. Login required.
+
+    ---
+    # Functions
+    ### public
+    - __init__
+    - put
+
+    ### private
+    - __validateDatabase
+    - __join
+    """
     def __init__(self):
+        """Adds arguements to the request. Verify a user's key, and connects to the database."""
 
         parser = reqparse.RequestParser()
         parser.add_argument("con1", type=str)
@@ -63,6 +75,19 @@ class InsertGeneric(Resource):
         """
         Strips all whitespace in front, and after the conditions. To make it cleaner, spaces between words will not be stripped.
         Add quotes to all values, then joins them all with ", " between each word.
+
+        ---
+        # Parameters
+        ### *values
+        A list of objects, such as strings, ints, floats, etc. You wish to join together to form a string.
+
+        ---
+        # Example
+        ```python3
+        objects = ["Monday", "Tuesday", "Wednesay"]
+        result = Database().__join(objects)
+        print(result) # "Monday, Tuesday, Wednesay
+        ```
         """
         strippedValues = [value.strip() for value in values if len(value.strip()) != 0]
         quotedValues = [f"'{value}'" for value in strippedValues]

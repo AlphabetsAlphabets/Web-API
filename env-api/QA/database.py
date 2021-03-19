@@ -18,14 +18,17 @@ class Database:
     ---
 
     # Functions
+    ### public
     - connect
-    - __json_default (private)
     - toSerialisable
     - keyValuePairing
     - formatEntries
     - getColumnNames
     - columnNamesForInsert
     - forUpdate
+
+    ### private
+    - __json_default (private)
 
     """
     def connect(host: str, user: str, password: str, schema_name: str) -> Union[TYPE_SQL_CONN, TYPE_CURSOR]:
@@ -78,6 +81,15 @@ class Database:
         # Parameters
         ### value
         The value to be converted to be a JSON serializable object
+
+        ---
+        # Example
+        When a `datetime.datetime` is passed such as `date = datetime.datetime.now()`
+        ```python3
+        import datetime as dt
+        time = dt.datetime.now()
+        result = Database().__json_default(time)
+        print(result) # in the format of YYYY-MM-DD HH-MM-SS
         """
         if isinstance(value, decimal.Decimal):
             return str(float(value)) + "0"
@@ -92,7 +104,8 @@ class Database:
             return str(value)
 
     def toSerialisable(self, data: tuple) -> list:
-        """Converts non-serializable JSON objects to serilizable JSON objects
+        """Converts non-serializable JSON object (tuple) to serilizable JSON objects (list). \ 
+        Basically it converts a tuple to a list.
 
         ---
         
@@ -118,6 +131,14 @@ class Database:
         ---
         The list of results from successfull execution of a mysql query \
         from `self.cursor.fetchall()`.
+
+        ---
+        # Example
+        ```python3
+        res = ["one", "two", "three"]
+        result = Database.keyValuePairing(cursor, res)
+        print(result) # {"columnOne": "one", "columnTwo": "two", "columnThree": "three"}
+        ```
         """
         description = cursor.description # Gets all the column names
         desc = [description[c][0] for c, _ in enumerate(description)] # Storing all the column names into a list, previously = (fid, 0, 0, 0) after formatting = fid
@@ -132,7 +153,7 @@ class Database:
 
 
     def formatEntries(self, result: list) -> list:
-        """Converts any MySQL database types to native python types.
+        """Converts any MySQL database types to native python types that are also serializable.
 
         ---
         
@@ -153,18 +174,23 @@ class Database:
 
         return formattedRes
         
-    def getColumnNames(cursor: TYPE_CURSOR, names: list) -> str:
+    def getColumnNames(names: list) -> str:
         """
         Takes in a list of column names, and stiches them together to form a string of all the column names.
 
         ---
 
         # Parameters
-        ### cursor
-        The MySQLCursor returned when connecting to a MySQL database.
-
         ### names
         A list of column names.
+
+        ---
+        # Example
+        ```python3
+        names = ["monthly income", "name", "position"]
+        result = Database.getColumnNames(names)
+        print(result) # monthly income, name, position
+        ```
         """
         baseString = ""
         for name in names:
@@ -185,7 +211,14 @@ class Database:
         The MySQLCursor returned when connecting to a MySQL database.
 
         ### name
-        The list of column names     
+        The list of column names
+
+        ---
+        # Example
+        ```python3
+        names = ["Monday", "Tuesday", "Wednesday"]
+        result = Database.columnNamesForInsert(cursor, names)
+        print(result) # "`columnOne` = Monday, `columnTwo` = "Tuesday", `columnThree` = "Wednesday"
         """
         if names == None:
             description = cursor.description # Gets all the column names

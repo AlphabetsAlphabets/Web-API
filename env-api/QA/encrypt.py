@@ -30,7 +30,7 @@ class Hash:
                 
         return string
 
-    def decrypt(string: str) -> string:
+    def decrypt(string: str) -> str:
         """
         Decrypts a given hash
 
