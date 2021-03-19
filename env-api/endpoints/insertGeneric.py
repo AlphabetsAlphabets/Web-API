@@ -97,9 +97,19 @@ class InsertGeneric(Resource):
 
     def put(self, table: str, invoiceno: str) -> dict:
         """Takes your role into account. If your role is not within the dictionary, a forbidden error is thrown.
-        Provided that the checks provided by __validateDatabase has succeded. A new connection to the table you
-        requested edit will be made. If the table does not exists a not found error will be thrown, otherwise
-        it will continue as expected, and insert the row into the table."""
+
+        ---
+        # Parameters
+        ### table
+        The name of the table you wish to make edits to
+
+        ### Invoiceno (temporary)
+        The invoice number to reference whcih invoice you wish to edit.
+
+        ---
+        # Exceptions
+        - ProgrammingError: Occurs when trying to connect to a database with invalid credentials
+        """
         wheres = {"tinvoicehistory": "`finvoiceno`", "tdebtordetail": "`debtorcode`"}
         if table not in wheres:
             abort(404, message=f"table with the name of {table} not found.")

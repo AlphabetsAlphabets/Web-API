@@ -4,17 +4,29 @@ from QA.database import Database
 class Location(Resource):
     """
     This is used by the mobile app to get the location information of our clients. Api key validation is needed.  
+
+    ---
+    # Functions
+    ### public
+    - __init__
+    - get
+
+    ### private
+    - __info
+
     """
     def __init__(self):
-        # Validate api key
+        """TODO: Add a method for api key validation"""
         pass
 
     def __info(self):
+        """Displays information on every request"""
         print("==="*20)
         print("Endpoint: location (for mobile app)")
         print("==="*20 + "\n")
 
     def get(self):
+        """Processes the GET request"""
         self.__info()
 
         try:

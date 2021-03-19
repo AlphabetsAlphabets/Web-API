@@ -15,10 +15,25 @@ from mysql.connector.errors import InterfaceError as TYPE_INTERFACE_ERROR
 import os
 
 class Sync(Resource):
+    """This class handles syncing data between a MySQL database hosted on the server, and a local SQLite3 database hosted on the mobile application.
+    
+    ---
+    # Functions
+    ### public
+    - __init__
+    - put
+
+    ### private
+    - __join
+    - __dataProcessing
+    - __updateCounter
+    - __insertStatement
+
+    
+    """
     def __init__(self):
         """
-        When a new POST request is made, an instance of Sync is spawned immediately, and automatically which connects to a MySQL database on the server, 
-        and a local SQLite database. 
+        Handles initilization, and connects to a MySQL database on the server, as well as, a local SQLite database. 
         """
         try:
             self.sqlConn, self.sqlCursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)

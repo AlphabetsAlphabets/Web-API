@@ -4,14 +4,25 @@ from QA.database import Database
 from QA.key import Key
 
 """
-Change * in all sql query to selected ones when decided in the future.
+This endpoint MUST be removed due to the same reasons as listed in insertGeneric.py endpoint
 """
 
 class Spec(Resource):
+    """Creates a SELECT statement that can dynamically change depending on the table you want to view the information of.
+
+    ---
+    # Functions
+    - __init__
+    - get
+    """
     def __init__(self):
-        self.schema = "testing"
-        self.conn, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)
-        # self.conn, self.cursor = Database.connect("localhost", "root", "8811967", self.schema)
+        """Handles initialization and connects to a MySQL database."""
+        try:
+            self.conn, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", "testing")
+            self.schema = "testing"
+        except:
+            self.conn, self.cursor = Database.connect("localhost", "root", "8811968", "schema")
+            self.schema = "schema"
 
         parser = reqparse.RequestParser()
         parser.add_argument("key", type=str, location="headers")
@@ -29,7 +40,14 @@ class Spec(Resource):
         """
 
     def get(self, table: str, o1: Union[str, int], o2: Union[str, int], o3: Union[str, int], o4: Union[str, int], o5: Union[str, int]) -> str:
-        """Collects all the parameters into a list. Then filters out unwanted values."""
+        """Collects all the parameters into a list. Then filters out unwanted values.
+        
+        ---
+        # Parameters
+        ### o1 - o5
+        The parameters you want to use in the SQL statement.
+         
+        """
         initialParams = [o1, o2, o3, o4, o5] 
         filteredParams = list(filter(self.removeNone, initialParams)) # removes all empty values ("n")
         noneIndices = [i for i, v in enumerate(initialParams) if v == "n"]
