@@ -70,53 +70,55 @@ from typing import Union
 class Example:
     """This class provides functions to add, and divide
 
-    Functions
-    =========
-    - add 
+    # Functions
+    - add (private)
     - subtract 
     """
 
-    def add(self, number1: Union[int, float], number2: Union[int, float]) -> Union[int, float]:
+    def __add(self, number1: Union[int, float], number2: Union[int, float]) -> Union[int, float]:
         """Adds two numbers together
 
-        Parameters
-        ==========
+        ---
+
+        # Parameters
         
-        number1
-        -------
+        ### number1
         the first number
 
-        number2
-        -------
+        ### number2
         the second number
         """
 
         return number1 + number2
 
-    def divide(self, number1: int, number 2: int) -> int:
+    def divide(self, number1: int, number 2: int) -> Union[int, str]:
         """Performs division
-        Parameters
-        ==========
+
+        ---
+
+        # Parameters
         
-        number1
-        -------
+        ### number1
         the first number
 
-        number2
-        -------
+        ### number2
         the second number
 
-        Exceptions
-        ==========
-        ZeroDivisionError: This occurs when you divide by 0
+        ---
+
+        # Exceptions
+        - ZeroDivisionError: This occurs when you divide by 0
         """
-        return number1 / number2
+        try:
+            return number1 / number2
+        except ZeroDivisionError:
+            return "cannot divide by zero"
 ```
-Make sure to include a brief summary about what the class does, and list down all their class functions.
+Make sure to include a brief summary about what the class does, and list down all their class functions. And always make sure to include a brief summary about the class and function first.
 
-Then in each function, give a brief description, followed by a brief explanation for each parameter, and if the function has a chance to throw an exception include an exception section as well.
+Then in each function, give a brief description, followed by a brief explanation for each parameter, and if the function has a chance to throw an exception include an exception section as well. And if the function is private make sure to include it in parenthesis.
 
-Separate each section with `====`'s and it's points with `----`'s the number of `=` or `-` is equal to the length of the point.
+Separate each section with three `-`'s 
 
 And make sure to include type hinting. Refer to the python documentation about the [typing](https://docs.python.org/3/library/typing.html) module
 
@@ -127,6 +129,13 @@ def foo(a: str, b: int) -> str
     return str + str(int)
 ```
 This tells the user that `foo` has two parameters `a`, and `b`. And that `a` accepts a string, `b` accepts an interger and the function returns a string.
+
+for advanced type hinting, such as a parameter accepting either a boolean or an interger the [typing](https://docs.python.org/3/library/typing.html) module is required.
+```python
+from typing import Union
+def bar(a: Union[int, bool]) -> bool:
+    return bool(a)
+```
 
 
 # Sugestions

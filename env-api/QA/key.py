@@ -12,6 +12,16 @@ api key
 """
 
 class Key(Resource):
+	"""
+	This class is used to retrieve, and verify a user's unique api key.
+
+	---
+	# Functions
+	- __init__
+	- getKey
+	- verifyKey
+
+	"""
 	def __init__(self):
 		self.schema = "testing"
 		self.table = "creds"
@@ -21,6 +31,18 @@ class Key(Resource):
 			abort(503, message="Unable to connect to database. Check your credentials.")
 
 	def getKey(self, user: str, password: Union[str, int]) -> str:
+		"""
+		Retrieve the user's unique api key 
+
+		---
+		# Parameters
+		### user
+		The username
+
+		### password
+		The password of the user
+
+		"""
 		print(f"Params: user {user}, password {password}")
 		"""Checks to see if the password matches the one in the database. If it does then it returns
 		a key and an auth level. If not, throws an error."""
@@ -42,6 +64,14 @@ class Key(Resource):
 		"""
 		Goes through the database, with user, and key as conditionals. To verify if this unique key belongs
 		to this particular user.	
+
+		---
+		# Parameters
+		### user
+		The user's name
+
+		### key
+		The user's unique api key
 		"""
 		sqlQuery = f"SELECT apikey FROM {self.schema}.{self.table} WHERE user = '{user}'"
 		self.keyCursor.execute(sqlQuery)
