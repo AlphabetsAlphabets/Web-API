@@ -2,6 +2,9 @@ from flask_restful import Resource, abort
 from QA.database import Database
 
 class Location(Resource):
+    """
+    This is used by the mobile app to get the location information of our clients. Api key validation is needed.  
+    """
     def __init__(self):
         # Validate api key
         pass

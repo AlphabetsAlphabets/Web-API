@@ -11,8 +11,53 @@ from mysql.connector.connection import MySQLConnection as TYPE_SQL_CONN
 from mysql.connector.errors import ProgrammingError as E_PROGRAMMING_ERROR
 
 class Database:
+    """
+    This class provides functions for connecting to MySQL databases. As well as functions
+    for formatting, and conversion of non-serializable JSON to serilizable JSON.
+
+    Functions
+    ========
+    - connect
+    - __json_default (private)
+    - toSerialisable
+    - keyValuePairing
+    - formatEntries
+    - getColumnNames
+    - columnNamesForInsert
+    - forUpdate
+
+    """
     def connect(host: str, user: str, password: str, schema_name: str) -> Union[TYPE_SQL_CONN, TYPE_CURSOR]:
-        """Connects to a MySQL database assuming all entered information is valid."""
+        """Connects to a MySQL database assuming all entered information is valid.
+        
+        Parameters
+        ==========
+
+        host
+        ----
+        The ip address of the host for the MySQL server, \
+        if the server is hosted on your local machine simply set host to 'localhost'
+
+        user
+        ----
+        The username of the mysql database. 
+
+        password
+        --------
+        The password needed to login into the mysql database.
+
+        schema_name
+        -----------
+        The name of the schema you are trying to connect to.\ 
+        For example in `tsc_office.tinvoicehistory` tsc_office is the schema name, \
+        and `tinvoicehistory` is the table name.
+
+        Exceptions
+        ==========
+        ProgrammingError: This error occurs when one of the four fields are incorrect,
+        whether it be password, or host, etc.
+
+        """
         try:
             connection = mysql.connector.connect(
                 host = host, user = user, password = password,
@@ -28,6 +73,7 @@ class Database:
         return connection, cursor
 
     def __json_default(self, value: Union[decimal.Decimal, datetime.date]) -> str: 
+        """Formats datatype outputs from non-serializable to serializable"""
         if isinstance(value, decimal.Decimal):
             return str(float(value)) + "0"
             
@@ -42,6 +88,7 @@ class Database:
         
 
     def toSerialisable(self, data: tuple) -> list:
+        """Converts non-serializable JSON objects to serilizable JSON objects"""
         data = [list(c) for c in data]
 
         return data
@@ -90,6 +137,15 @@ class Database:
         return baseString
 
     def columnNamesForInsert(cursor: TYPE_CURSOR, names: list = None) -> str:
+        """Prepares an insert statement.
+        
+        Parameters
+        ----------
+        cursor: MySQLCursor
+            The MySQLCursor returned when connecting to a MySQL database.
+        name: list
+            The list of column names     
+        """
         if names == None:
             description = cursor.description # Gets all the column names
             formattedName = [description[c][0] for c, _ in enumerate(description)] # Storing all the column names into a list, previously = (fid, 0, 0, 0) after formatting = fid

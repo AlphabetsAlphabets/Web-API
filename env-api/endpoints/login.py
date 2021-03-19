@@ -12,16 +12,16 @@ class Login(Resource):
     def __init__(self):
         """Connects to the MySQL database"""
         try:
-            self.tap, self.tapCursor = Database.connect("localhost", "root", "8811967", "tsc_office")
+            self.tap, self.cursor = Database.connect("localhost", "root", "8811967", "tsc_office")
         except NotFound:
-            self.tap, self.tapCursor = Database.connect("localhost", "root", "YJH030412yjh_g", "tsc_office")
+            self.tap, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", "tsc_office")
 
     def get(self, user, password):
         enc, k = Key().getKey(user, password)
 
         sqlString = f"SELECT * FROM tsc_office.tap WHERE fuser = '{user}' AND fpassword = '{enc}'"
-        self.tapCursor.execute(sqlString)
+        self.cursor.execute(sqlString)
 
-        fid = self.tapCursor.fetchall()[0][4]
+        fid = self.cursor.fetchall()[0][4]
 
         return {"fid": fid, "key": k}
