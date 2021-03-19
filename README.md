@@ -30,6 +30,12 @@ Of course set `self.schema` and `self.table` to valid names. **Do not** alter/mo
 
 # General information 
 
+#### Table of contents
+Topic | description |
+- | - |
+|[Finding where anything is defined](https://github.com/YJH16120/Web-API#finding-where-anything-is-defined) | Useful for when you want to know the inner workings of a function |
+
+
 ### Finding where anything is defined.
 - All endpoints are located in the env-api/endpoints/ directory. 
 - Functions related to connecting to a database, encryption, and api key verification is located in the env-api/QA/ directory.
