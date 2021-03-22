@@ -10,6 +10,7 @@ from mysql.connector.errors import DataError as TYPE_DATA_ERROR
 
 class Update(Resource):
     def __init__(self):
+        password = Database().getPassword()
         self.schema = "testing"
 
         parser = reqparse.RequestParser() 
@@ -26,8 +27,10 @@ class Update(Resource):
         K = Key()
         K.verifyKey(user, key)
 
-        self.conn, self.cursor = Database().connect("localhost", "root", "YJH030412yjh_g", self.schema)
-        # self.conn, self.cursor = Database().connect("localhost", "root", "8811967", self.schema)
+        try:
+            self.conn, self.cursor = Database().connect("localhost", "root", password[0], self.schema)
+        except Exception:
+            self.conn, self.cursor = Database().connect("localhost", "root", password[1], self.schema)
 
     def post(self, salesperson):
         self.cursor.execute(f"SELECT * FROM {self.schema}.trans WHERE salesperson = {salesperson}")

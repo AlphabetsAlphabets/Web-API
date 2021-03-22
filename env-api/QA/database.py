@@ -1,6 +1,6 @@
 import datetime
 import decimal
-from typing import Union
+from typing import List, Union
 
 import mysql.connector
 from flask_restful import abort
@@ -25,6 +25,7 @@ class Database:
     - getColumnNames
     - columnNamesForInsert
     - forUpdate
+    - getPassword
 
     ### private
     - __json_default (private)
@@ -250,3 +251,8 @@ class Database:
 
         return (", ").join(valid)
 
+    def getPassword() -> List[str]:
+        with open("config.ini") as f:
+            lines = f.readlines()
+
+        return lines

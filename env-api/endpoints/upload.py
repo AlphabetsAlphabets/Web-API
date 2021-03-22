@@ -22,12 +22,14 @@ class Upload(Resource):
         """Feel free to remove to try/except catch once the schema, and table names have been decided. Make sure to keep
         self.schema, and self.testing, and to not remove it. Also change self.schema, and self.table to the appropriate schema and
         table name."""
+
+        password = Database.getPassword()
         try:
-            self.conn, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", "testing")
+            self.conn, self.cursor = Database.connect("localhost", "root", password[0], "testing")
             self.schema = "testing" 
             self.table = "images"
         except Exception:
-            self.conn, self.cursor = Database.connect("localhost", "root", "8811967", "tsc_office")
+            self.conn, self.cursor = Database.connect("localhost", "root", password[1], "tsc_office")
             self.schema = "tsc_office"
             self.table = "timages"
 

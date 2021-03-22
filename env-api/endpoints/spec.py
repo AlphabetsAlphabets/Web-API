@@ -17,12 +17,13 @@ class Spec(Resource):
     """
     def __init__(self):
         """Handles initialization and connects to a MySQL database."""
+        password = Database().getPassword()
         try:
-            self.conn, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", "testing")
+            self.conn, self.cursor = Database.connect("localhost", "root", password[0], "testing")
             self.schema = "testing"
-        except:
-            self.conn, self.cursor = Database.connect("localhost", "root", "8811968", "schema")
-            self.schema = "schema"
+        except Exception:
+            self.conn, self.cursor = Database.connect("localhost", "root", password[1], "tsc_office")
+            self.schema = "tsc_office"
 
         parser = reqparse.RequestParser()
         parser.add_argument("key", type=str, location="headers")

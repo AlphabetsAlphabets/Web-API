@@ -35,12 +35,13 @@ class Sync(Resource):
         """
         Handles initilization, and connects to a MySQL database on the server, as well as, a local SQLite database. 
         """
+        password = Database().getPassword()
         try:
-            self.sqlConn, self.sqlCursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)
+            self.sqlConn, self.sqlCursor = Database.connect("localhost", "root", password[0], self.schema)
             self.schema = "testing"
             self.table = "trans"
         except TYPE_INTERFACE_ERROR:
-            self.sqlConn, self.sqlCursor = Database().connect("localhost", "root", "8811967", "tsc_office")
+            self.sqlConn, self.sqlCursor = Database().connect("localhost", "root", password[1], "tsc_office")
             self.schema = "tsc_office"
             self.table = ""
         

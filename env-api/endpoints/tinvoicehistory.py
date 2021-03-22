@@ -6,9 +6,14 @@ from QA.key import Key
 class TInvoiceHistory(Resource):
     """This is endpoint is meant to view a specific invoice, or to view all invoices"""
     def __init__(self):
+        password = Database.getPassword()
         self.schema = "tsc_office"
 
-        self.conn, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)
+        try:
+            self.conn, self.cursor = Database.connect("localhost", "root", password[0], self.schema)
+        except Exception:
+            self.conn, self.cursor = Database.connect("localhost", "root", password[1], self.schema)
+
 
         parser = reqparse.RequestParser()
         parser.add_argument("key", type=str, location='headers')

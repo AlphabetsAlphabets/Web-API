@@ -48,7 +48,7 @@ Web API
 |           __init__.py
 |           
 \---src
-        api.py
+        main.py
 ```        
 ### Root of the project
 Web API is the root of the project, and from this point onwards whenever I say "at the root of the project" assume that you have to go to 
@@ -62,7 +62,7 @@ This is where the `endpoints` directory is, and where *all* endpoints reside. It
 kept there.
 
 ### src
-This folder contains the main source file. Where `api.py` is the main source file.
+This folder contains the main source file. Where `main.py` is the main source file.
 
 ---
 ### Configuring the development environment
@@ -79,7 +79,7 @@ From this point onwards make sure you perform all commands in the root of the pr
     - `py -m venv env-api`
     - For powershell: `env-api\Scripts\active`, for CMD: `activate`
     - `pip install -r requirements.txt`, this will install the appropriate dependancies.
-7. Check if you've setup everything correctly. Go to the root of Web-API, then run `py src/api.py`
+7. Check if you've setup everything correctly. Go to the root of Web-API, then run `py src/main.py`
 If there are no errors and everything is fine, it means that you've successfully configured your environment to develop the API.
 
 ---
