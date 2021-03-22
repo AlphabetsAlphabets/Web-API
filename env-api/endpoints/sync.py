@@ -79,6 +79,20 @@ class Sync(Resource):
         """
         Strips all whitespace in front, and after the conditions. To make it cleaner, spaces between words will not be stripped.
         Add quotes to all values, then joins them all with ", " between each word.
+
+        ---
+        # Parameters
+        ### values  
+        The list of values that you wish to form into a string.
+
+        ---
+        # Example
+        ```python3
+        values = ["one", "two", "three"]
+        result = self.__join(values)
+        print(result) # "one, two, three"
+        ```
+        Keep in mind that this is a private method, so you cannot call it outside of the class.
         """
         strippedValues = [str(value).strip() for value in values if len(str(value).strip()) != 0]
         quotedValues = [f"'{value}'" for value in strippedValues]
@@ -87,6 +101,13 @@ class Sync(Resource):
         return joinedValues
 
     def put(self, salesperson):
+        """Processes the PUT request. And syncs the data between the user's sqlite table, and the server's MySQL table.
+        
+        ---
+        # Parameters
+        ### salesperson
+        The client's id. This id is used to sync entries for that specific client.
+        """
         self.person = salesperson
         
         valid = self.__dataProcessing()
@@ -96,6 +117,7 @@ class Sync(Resource):
         return [{201: f"Successfully synced."}]
 
     def __dataProcessing(self) -> Union[list, None]:
+        """Fetchs all entries that are at most 3 days old from the current date."""
         sqlString = f"SELECT * FROM {self.schema}.{self.table} WHERE salesperson = '{self.person}' and fbydate >= CURDATE() - INTERVAL 3 day" # This causes an extra element in a tuple in a list
         self.sqlCursor.execute(sqlString) 
         resSql = self.sqlCursor.fetchall()
@@ -123,6 +145,9 @@ class Sync(Resource):
         return valid
 
     def __updateCounter(self) -> None:
+        """Updates the hidden element `counter` from 0 to 1 then to 2. When `counter` is set from 0 to 1,
+        nothing seems wrong on the surface. If it goes to 2 from 1, it's absolutely valid."""
+
         liteQuery = f"UPDATE `transaction` SET counter = '1' WHERE counter = '0' AND salesperson = '{self.person}' AND fbydate >= date('now', '-3 day')"
         self.liteCursor.execute(liteQuery)
         self.liteCon.commit()
@@ -139,7 +164,24 @@ class Sync(Resource):
         self.sqlCursor.execute(sqlQuery)
         self.sqlConn.commit()
 
-    def __insertStatement(self, values) -> None:
+    def __insertStatement(self, values: list) -> None:
+        """Creates an insert statement from a list of values, and with the column names with a sql cursor
+        
+        ---
+        # Parameters
+        ### values
+        The list of values to be used in the insert statement.
+
+        ---
+        # Example
+        ```python3
+        values = ["one", "two", "three"]
+        result = self.__insertStatement(values)
+        print(result) # "INSERT INTO schema.table (`number1`, `number2`, `number3`) VALUES ("one", "two", "three")"
+        ```
+
+        Again this is a private method, and cannot be used outside of the class. 
+        """
         columns = Database.columnNamesForInsert(self.sqlCursor)
         quotedValues = self.__join(*values)
         sqlQuery = f"INSERT INTO {self.schema}.{self.table} ({columns}) VALUES ({quotedValues})"

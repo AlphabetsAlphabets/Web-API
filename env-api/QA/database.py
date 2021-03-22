@@ -16,7 +16,6 @@ class Database:
     for formatting, and conversion of non-serializable JSON to serilizable JSON.
 
     ---
-
     # Functions
     ### public
     - connect
@@ -35,7 +34,6 @@ class Database:
         """Connects to a MySQL database assuming all entered information is valid.
 
         ---
-        
         # Parameters
         ### host
         The ip address of the host for the MySQL server, \
@@ -53,11 +51,9 @@ class Database:
         and `tinvoicehistory` is the table name.
 
         ---
-
         # Exceptions
         - ProgrammingError: This error occurs when one of the four fields are incorrect,
         whether it be password, or host, etc.
-
         """
         try:
             connection = mysql.connector.connect(
@@ -73,11 +69,10 @@ class Database:
 
         return connection, cursor
 
-    def __json_default(self, value: Union[decimal.Decimal, datetime.date, datetime.datetime, datetime.timedelta]) -> str: 
+    def json_default(self, value: Union[decimal.Decimal, datetime.date, datetime.datetime, datetime.timedelta]) -> str: 
         """Formats datatype outputs from non-serializable to serializable
 
         ---
-        
         # Parameters
         ### value
         The value to be converted to be a JSON serializable object

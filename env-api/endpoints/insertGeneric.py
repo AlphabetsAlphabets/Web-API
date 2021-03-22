@@ -7,7 +7,7 @@ from typing import NoReturn, Union
 
 from mysql.connector.cursor import MySQLCursor as TYPE_CURSOR
 
-"""The reason as to why you should scrape this endpoint below"""
+"""The reason as to why you should scrap this endpoint below"""
 """
     My personal opinion is that this endpoint should not exist at all. The best practice is one endpoint for one data base table.
     Not one generic one for a few of them. Because it's how api endpoint's work. They don't serve as a general purpose tool, but instead

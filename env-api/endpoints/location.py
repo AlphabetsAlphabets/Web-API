@@ -21,9 +21,10 @@ class Location(Resource):
 
     def __info(self):
         """Displays information on every request"""
-        print("==="*20)
+        banner = "==="*10 + " NEW GET REQUEST " + "==="*10
+        print(banner)
         print("Endpoint: location (for mobile app)")
-        print("==="*20 + "\n")
+        print("=" * len(banner))
 
     def get(self):
         """Processes the GET request"""

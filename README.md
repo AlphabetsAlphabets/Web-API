@@ -1,4 +1,20 @@
-# Important! Read this before using or modifying 
+# Read this first
+### In order to start developing for this api, you must meet the following conditions
+1. Have python 3.9 and above installed.
+2. make sure pip is working, to test run `pip --version` in a terminal. If it shows you the version number proceed, if not then fix it.
+3. Have the [git](https://git-scm.com/downloads) CLI installed.
+4. Run the following command:  `git clone 'https://github.com/YJH16120/Web-API'`
+5. Cut the contents from the env-api directory, and place it in the root of Web-API.
+6. Run the following commands to create a virtual environment (make sure you're in the root of Web-API when running these commands):
+    - run `pip install venv`
+    - `py -m venv env-api`
+    - For powershell: `env-api\Scripts\active`, for CMD: `activate`
+    - `pip install -r requirements.txt`, this will install the appropriate dependancies.
+7. Check if you've setup everything correctly. Go to the root of Web-API, then run `py src/api.py`
+If there are no errors and everything is fine, it means that you've successfully configured your environment to develop the API.
+
+---
+### Foreword
 Make sure to update the variables `self.schema` and `self.table` in **all** endpoints it appears in (all endpoints are located in env-api/endpoints/). It will usually appear in the `__init__` function of all endpoints. This is what it will look like int the `__init__` function.
 
 ```python3
@@ -74,7 +90,7 @@ Key.verifyKey("username", "abc123")
 ```
 
 ### Writing documentation
-Documentation is important. Make sure to include it in the following format. When creating classes it's methods.
+Documentation is important. Make sure to include it in the following format. When creating classes, and it's methods.
 ```python3
 from typing import Union
 

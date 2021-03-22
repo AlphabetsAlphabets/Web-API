@@ -1,6 +1,3 @@
-import datetime
-import decimal
- 
 from flask_restful import Resource, abort, reqparse
 
 from QA.database import Database
