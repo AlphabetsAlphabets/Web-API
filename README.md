@@ -1,4 +1,66 @@
+# Table of contents
+Topic | description |
+--- | ---- |
+| [Read first](https://github.com/YJH16120/Web-API#read-this-first) | This is very important, it teaches you about the project structure, and which files should belong in which directory |
+| [Finding where anything is defined](https://github.com/YJH16120/Web-API#finding-where-anything-is-defined) | Useful for when you want to know the inner workings of a function |
+| [Creating a new endpoint](https://github.com/YJH16120/Web-API#creating-a-new-endpoint) | A guide on how to create a new endpoint |
+| [Verifying a user's api key](https://github.com/YJH16120/Web-API#verifying-a-users-api-key) | How to verify a user's api key |
+| [Writing documentaiton](https://github.com/YJH16120/Web-API#writing-documentation) | How to write documentation that complies to PEP8 standards |
+| [Type hinting](https://github.com/YJH16120/Web-API#type-hinting) | How to write type hints and return types |
+
 # Read this first
+### Familiarize yourself with the directory structure
+```
+Web API
+|   .gitignore
+|   README.md
+|   requirements.txt
+|   
++---docs
+|       example.py
+|       
++---env-api
+|   |   pyvenv.cfg
+|   |   
+|   +---endpoints
+|   |   |   insertGeneric.py
+|   |   |   location.py
+|   |   |   login.py
+|   |   |   spec.py
+|   |   |   sync.py
+|   |   |   tap.py
+|   |   |   tinvoicehistory.py
+|   |   |   update.py
+|   |   |   upload.py
+|   |   |   __init__.py
+|   |   |   
+|   |   \---databases
+|   |           insertDb.db
+|   |           syncDb.db
+|   |           
+|   \---QA
+|           database.py
+|           encrypt.py
+|           key.py
+|           __init__.py
+|           
+\---src
+        api.py
+```        
+### Root of the project
+Web API is the root of the project, and from this point onwards whenever I say "at the root of the project" assume that you have to go to 
+Web API, unless specified otherwise.
+
+### docs
+Docs contain documentation. Code examples can be found there.
+
+### env-api
+This is where the `endpoints` directory is, and where *all* endpoints reside. It's also where `QA` is found, quality of life files/modules are
+kept there.
+
+### src
+This folder contains the main source file. Where `api.py` is the main source file.
+
 ### In order to start developing for this api, you must meet the following conditions
 1. Have python 3.9 and above installed.
 2. make sure pip is working, to test run `pip --version` in a terminal. If it shows you the version number proceed, if not then fix it.
@@ -46,14 +108,6 @@ Of course set `self.schema` and `self.table` to valid names. **Do not** alter/mo
 
 # General information 
 
-#### Table of contents
-Topic | description |
---- | ---- |
-|[Finding where anything is defined](https://github.com/YJH16120/Web-API#finding-where-anything-is-defined) | Useful for when you want to know the inner workings of a function |
-| [Creating a new endpoint](https://github.com/YJH16120/Web-API#creating-a-new-endpoint) | A guide on how to create a new endpoint |
-| [Verifying a user's api key](https://github.com/YJH16120/Web-API#verifying-a-users-api-key) | How to verify a user's api key |
-| [Writing documentaiton](https://github.com/YJH16120/Web-API#writing-documentation) | How to write documentation that complies to PEP8 standards |
-| [Type hinting](https://github.com/YJH16120/Web-API#type-hinting) | How to write type hints and return types |
 
 
 
