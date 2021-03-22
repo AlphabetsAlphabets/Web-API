@@ -1,7 +1,10 @@
 # Table of contents
 Topic | description |
 --- | ---- |
-| [Read first](https://github.com/YJH16120/Web-API#read-this-first) | This is very important, it teaches you about the project structure, and which files should belong in which directory |
+| [Setup and foreword](https://github.com/YJH16120/Web-API#read-this-first) | Important information |
+| [File structure](https://github.com/YJH16120/Web-API#familiarize-yourself-with-the-directory-structure) | Directory structure, and explanation on which file goes where. |
+| [How to setup development environment](https://github.com/YJH16120/Web-API#configuring-the-development-environment) | Tells you how to setup your development environment. |
+| [Foreword](https://github.com/YJH16120/Web-API#foreword) | Information on how to proceed.
 | [Finding where anything is defined](https://github.com/YJH16120/Web-API#finding-where-anything-is-defined) | Useful for when you want to know the inner workings of a function |
 | [Creating a new endpoint](https://github.com/YJH16120/Web-API#creating-a-new-endpoint) | A guide on how to create a new endpoint |
 | [Verifying a user's api key](https://github.com/YJH16120/Web-API#verifying-a-users-api-key) | How to verify a user's api key |
@@ -61,12 +64,16 @@ kept there.
 ### src
 This folder contains the main source file. Where `api.py` is the main source file.
 
-### In order to start developing for this api, you must meet the following conditions
+---
+### Configuring the development environment
 1. Have python 3.9 and above installed.
 2. make sure pip is working, to test run `pip --version` in a terminal. If it shows you the version number proceed, if not then fix it.
 3. Have the [git](https://git-scm.com/downloads) CLI installed.
-4. Run the following command:  `git clone 'https://github.com/YJH16120/Web-API'`
-5. Cut the contents from the env-api directory, and place it in the root of Web-API.
+4. Run the following command:  `git clone 'https://github.com/YJH16120/Web-API'`  
+
+From this point onwards make sure you perform all commands in the root of the project. Unless specified otherwise  
+
+5. Cut the contents from the env-api directory.
 6. Run the following commands to create a virtual environment (make sure you're in the root of Web-API when running these commands):
     - run `pip install venv`
     - `py -m venv env-api`
