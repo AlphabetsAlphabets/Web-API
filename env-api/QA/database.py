@@ -26,9 +26,7 @@ class Database:
     - columnNamesForInsert
     - forUpdate
     - getPassword
-
-    ### private
-    - __json_default (private)
+    - json_default (private)
 
     """
     def connect(host: str, user: str, password: str, schema_name: str) -> Union[TYPE_SQL_CONN, TYPE_CURSOR]:
@@ -239,7 +237,6 @@ class Database:
         """Prepares an update statement.
 
         ---
-        
         # Parameters
         ### columnNames
         The columNames that will be needed for the update statement.
@@ -252,7 +249,7 @@ class Database:
         return (", ").join(valid)
 
     def getPassword() -> List[str]:
-        with open("config.ini") as f:
-            lines = f.readlines()
+        with open("..\\env-api\\endpoints\\config.ini") as f:
+            lines = [line.strip("\n") for line in f.readlines()]
 
         return lines

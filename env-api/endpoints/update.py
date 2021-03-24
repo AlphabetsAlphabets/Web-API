@@ -9,7 +9,18 @@ from mysql.connector.errors import ProgrammingError as TYPE_PROGRAMMING_ERROR
 from mysql.connector.errors import DataError as TYPE_DATA_ERROR
 
 class Update(Resource):
+    """
+    # Important
+    This endpoint has not been used or maintained in a long time due to lack of use.
+
+    Updates the MySQL database to reflect changes
+
+    # Functions
+    - __init__
+    - post
+    """
     def __init__(self):
+        """Handles initialization, connects to database"""
         password = Database().getPassword()
         self.schema = "testing"
 
@@ -33,6 +44,13 @@ class Update(Resource):
             self.conn, self.cursor = Database().connect("localhost", "root", password[1], self.schema)
 
     def post(self, salesperson):
+        """Handles the POST request
+
+        ---
+        # Parameters
+        ### salesperson
+        The id of the salesperson 
+        """
         self.cursor.execute(f"SELECT * FROM {self.schema}.trans WHERE salesperson = {salesperson}")
         res = self.cursor.fetchall()
         if len(res) == 0:

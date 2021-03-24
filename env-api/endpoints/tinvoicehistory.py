@@ -25,6 +25,13 @@ class TInvoiceHistory(Resource):
         Key().verifyKey(user, key)
 
     def get(self, invoiceNumber: str):
+        """Processes the GET request. Gets all information of a specific invoice by referencing via invoice number.
+
+        ---
+        # Parameteres
+        ### invoiceNumber
+        Invoice number of an invoice.
+        """
         if invoiceNumber.lower() == "all":
             sqlQuery = f"SELECT * FROM {self.schema}.tinvoicehistory LIMIT 10"
             self.cursor.execute(sqlQuery)

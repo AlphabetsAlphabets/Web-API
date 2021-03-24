@@ -17,11 +17,20 @@ VARCHAR(250) recommended.
 """
 
 class Upload(Resource):
-    """Handles uploading images to the server."""
+    """Handles uploading images to the server. This endpoint is used by the mobile app specifically.
+
+    ---
+    # Functions
+    ### public
+    - __init__
+    - put
+
+    ### private
+    - __info
+    - __startup
+    """
     def __init__(self):
-        """Feel free to remove to try/except catch once the schema, and table names have been decided. Make sure to keep
-        self.schema, and self.testing, and to not remove it. Also change self.schema, and self.table to the appropriate schema and
-        table name."""
+        """Handles initialization, and connects to the database"""
 
         password = Database.getPassword()
         try:
@@ -45,8 +54,14 @@ class Upload(Resource):
         except Exception:
             pass
 
-    def __info(self, image):
-        """This just outputs information regarding the image itself. Useful during debugging."""
+    def __info(self, image: Image):
+        """This just outputs information regarding the image itself. Useful during debugging.
+
+        ---
+        # Parameters
+        ### image
+        An instance of the Image class from the PIL library 
+        """
         print(f"content_length: {image.content_length}")
         print(f"content_type: {image.content_type}")
         print(f"filename: {image.filename}")
@@ -58,7 +73,12 @@ class Upload(Resource):
 
 
     def __resize(self, dim: tuple) -> tuple:
-        """Resizes the image"""
+        """Resizes the image according to a threshold
+        
+        ---
+        # Parameters
+        ### dim
+        A tuple with the width and height of an image. In that exact order."""
         width, height = dim
 
         value = max(width, height)
@@ -71,9 +91,15 @@ class Upload(Resource):
 
         return dim
 
-    def __startup(self, saveName):
+    def __startup(self, saveName: str):
         """Shows startup information, including what type of request, and which endpoint it is from to save time searching through
-        each endpoint individually."""
+        each endpoint individually.
+        
+        ---
+        # Parameters
+        ### saveName
+        The name of the image.
+        """
         print("\n")
         banner = "=="*20 + " NEW PUT REQUEST " + "=="*20
 
@@ -84,7 +110,12 @@ class Upload(Resource):
         print("=" * len(banner))
 
     def put(self, saveName):
-        """Processing the PUT request"""
+        """Processes the PUT request.
+        
+        ---
+        # Parameteres
+        ### saveName
+        The image's name"""
         # imageSave = os.getcwd() + f"\\{saveName}.jpg"
         imageSave = os.getcwd() + f"\\{saveName}.jpg"
         print(imageSave)
