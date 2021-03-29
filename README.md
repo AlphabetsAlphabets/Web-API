@@ -13,7 +13,7 @@ Topic | description |
 | [Type hinting](https://github.com/YJH16120/Web-API#type-hinting) | How to write type hints and return types |
 
 ---
-##  Python learing resources
+##  Python learning resources
 This list contains a mix of videos to watch and text to read.
 
 ### Learing Python
