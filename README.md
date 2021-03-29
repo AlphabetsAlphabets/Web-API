@@ -24,7 +24,7 @@ This list contains a mix of videos to watch and text to read.
     - [OOP]https://www.youtube.com/watch?v=ZDa-Z5JzLYM&list=PL-osiE80TeTsqhIuOqKhwlXsIBIdSeYtc) (Object oriented programming)
 
 ### Building a REST API with Flask Restful
-- [Building an api with Flask Restful by Tim](https://www.youtube.com/watch?v=GMppyAPbLYk). This will teach you how to work with Flask Restful
+- [Building an api with Flask Restful by Tim Russica](https://www.youtube.com/watch?v=GMppyAPbLYk). This will teach you how to work with Flask Restful
 
 - [Documentation of Flask Restful](https://flask-restful.readthedocs.io/en/latest/), for a more in-depth explanation of how things work.
 
@@ -32,44 +32,22 @@ This list contains a mix of videos to watch and text to read.
 ## Familiarize yourself with the directory structure
 ```
 Web API
-|   .gitignore
-|   README.md
-|   requirements.txt
 |   
 +---docs
-|       example.py
 |       
 +---env-api
-|   |   pyvenv.cfg
 |   |   
 |   +---endpoints
-|   |   |   insertGeneric.py
-|   |   |   location.py
-|   |   |   login.py
-|   |   |   spec.py
-|   |   |   sync.py
-|   |   |   tap.py
-|   |   |   tinvoicehistory.py
-|   |   |   update.py
-|   |   |   upload.py
-|   |   |   __init__.py
 |   |   |   
 |   |   \---databases
-|   |           insertDb.db
-|   |           syncDb.db
 |   |           
 |   \---QA
-|           database.py
-|           encrypt.py
-|           key.py
-|           __init__.py
 |           
 \---src
-        main.py
+
 ```        
 ## Root of the project
-Web API is the root of the project, and from this point onwards whenever I say "at the root of the project" or something similar.
-Always assume that you have to go to Web API, unless specified otherwise.
+Web API is the root of the project, and from this point onwards whenever I say "at the root of the project" or reference the root of the project in any capacity. Always assume that you have to go to Web API, unless specified otherwise.
 
 ## docs
 Docs contain documentation. Code examples can be found there.
@@ -78,7 +56,10 @@ Docs contain documentation. Code examples can be found there.
 This is where the `endpoints` directory is, and where *all* endpoints reside. It's also where `QA` is found, quality of life files/modules are
 kept there.
 
-## env-api/databases
+## endpoints
+This is where **all** endpoints are kept. Make sure it goes into that folder.
+
+## databases
 This is where the sqlite3 databases are kept. These are used to simulate, a client's activity.
 
 ## src
@@ -89,15 +70,17 @@ This folder contains the main source file. Where `main.py` is the main source fi
 1. Have python 3.9 and above installed.
 2. make sure pip is working, to test run `pip --version` in a terminal. If it shows you the version number proceed, if not then fix it.
 3. Have the [git](https://git-scm.com/downloads) CLI installed.
-4. Run the following command:  `git clone 'https://github.com/YJH16120/Web-API'`  
+4. Run the following command: `git clone 'https://github.com/YJH16120/Web-API'`  
 
 From this point onwards make sure you perform all commands in the root of the project. Unless specified otherwise  
 
-5. Cut the contents from the env-api directory.
-6. Run the following commands to create a virtual environment (make sure you're in the root of Web-API when running these commands):
+5. Cut the contents from the env-api directory, except pyvenv.cfg. Keep it either in your clipboard, or paste it some where else for safe keeping. Then delete the folder. The contents will be needed later.
+
+6. Run the following commands to create a virtual environment (make sure you're in the root when running these commands):
     - run `pip install venv`
     - `py -m venv env-api`
     - For powershell: `env-api\Scripts\active`, for CMD: `activate`
+    - go into `env-api\` then paste the contents from your clipboard into the directory.
     - `pip install -r requirements.txt`, this will install the appropriate dependancies.
 
 It is worth noting that if you run this python code through visual studio code (VSC) by clicking the [play button](https://i.postimg.cc/D0ykRP8k/image.png)
@@ -105,7 +88,7 @@ provided by the downloadable python extension, **most** endpoints that require t
 from a terminal instead. That is because each source file sees itself as the centre of the project, and everything else as relative to it, whereas if you
 run it in VSC the root will be the centre of the project instead of each source file being the centre. Which is why it will most likely fail.
 
-7. Check if you've setup everything correctly. Go to the root of Web-API, then run `py src/main.py`
+7. Check if you've setup everything correctly. Go to the root, then run `py src/main.py`
 If there are no errors and everything is fine, it means that you've successfully configured your environment to develop the API.
 
 ---
