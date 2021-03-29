@@ -21,7 +21,7 @@ This list contains a mix of videos to watch and text to read.
 
 - Corey Schafer for general Python tutorials where he goes in-depth to each concept.
     - [Python for beginners](https://www.youtube.com/watch?v=YYXdXT2l-Gg&list=PL-osiE80TeTskrapNbzXhwoFUiLCjGgY7)
-    - [OOP]https://www.youtube.com/watch?v=ZDa-Z5JzLYM&list=PL-osiE80TeTsqhIuOqKhwlXsIBIdSeYtc) (Object oriented programming)
+    - [OOP](https://www.youtube.com/watch?v=ZDa-Z5JzLYM&list=PL-osiE80TeTsqhIuOqKhwlXsIBIdSeYtc) (Object oriented programming)
 
 ### Building a REST API with Flask Restful
 - [Building an api with Flask Restful by Tim Russica](https://www.youtube.com/watch?v=GMppyAPbLYk). This will teach you how to work with Flask Restful
