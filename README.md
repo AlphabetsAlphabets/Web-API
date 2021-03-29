@@ -1,7 +1,7 @@
 # Table of contents
 Topic | description |
 --- | ---- |
-| [Setup and foreword](https://github.com/YJH16120/Web-API#read-this-first) | Important information |
+| [Python learning resources](https://github.com/YJH16120/Web-API#Python-learning-resources) | You are required to have at least have intermediate knowledge of Python. Learing resources are provided here. |
 | [File structure](https://github.com/YJH16120/Web-API#familiarize-yourself-with-the-directory-structure) | Directory structure, and explanation on which file goes where. |
 | [How to setup development environment](https://github.com/YJH16120/Web-API#configuring-the-development-environment) | Tells you how to setup your development environment. |
 | [Foreword](https://github.com/YJH16120/Web-API#foreword) | Information on how to proceed.
@@ -11,6 +11,22 @@ Topic | description |
 | [Verifying a user's api key](https://github.com/YJH16120/Web-API#verifying-a-users-api-key) | How to verify a user's api key |
 | [Writing documentaiton](https://github.com/YJH16120/Web-API#writing-documentation) | How to write documentation that complies to PEP8 standards |
 | [Type hinting](https://github.com/YJH16120/Web-API#type-hinting) | How to write type hints and return types |
+
+---
+##  Python learing resources
+This list contains a mix of videos to watch and text to read.
+
+### Learing Python
+- [Python crash course](https://www.youtube.com/watch?v=rfscVS0vtbw&t=10686s) by Mike Dane
+
+- Corey Schafer for general Python tutorials where he goes in-depth to each concept.
+    - [Python for beginners](https://www.youtube.com/watch?v=YYXdXT2l-Gg&list=PL-osiE80TeTskrapNbzXhwoFUiLCjGgY7)
+    - [OOP]https://www.youtube.com/watch?v=ZDa-Z5JzLYM&list=PL-osiE80TeTsqhIuOqKhwlXsIBIdSeYtc) (Object oriented programming)
+
+### Building a REST API with Flask Restful
+- [Building an api with Flask Restful by Tim](https://www.youtube.com/watch?v=GMppyAPbLYk). This will teach you how to work with Flask Restful
+
+- [Documentation of Flask Restful](https://flask-restful.readthedocs.io/en/latest/), for a more in-depth explanation of how things work.
 
 ---
 ## Familiarize yourself with the directory structure
@@ -100,14 +116,6 @@ Make sure to update the variables `self.schema` and `self.table` in **all** endp
 class endpoint:
     def __init__(self):
         # code ...
-        try: 
-            self.conn, self.cursor = Database.connect(.., ..)
-            self.schema = "schema"
-            self.table = "table"
-        except Exception:
-            self.conn, self.cursor = Database.connect(.., ..)
-            self.schema = "schema"
-            self.table = "table"
 ```
 
 change the `__init__` function to:
@@ -150,6 +158,8 @@ class Example(Resource):
 - `self.conn` is the connection to the MySql database
 - `self.cursor` is the cursor to the MySql database
 - `<request>` is the type of request. Change `<request>` to GET if the endpoint is going to process a GET request. For a template refer to example.py (docs/example.py)
+
+My suggestion instead of writing in the string literal into the password field. A function that reads from a file such as config.ini should be used to store that information. And that file should be included in the .gitignore file. Here is an [example](https://github.com/YJH16120/Web-API/blob/master/env-api/QA/database.py)(scroll to the end of the file, and look for `getPassword`).
 
 ---
 ## Setting up a url resource

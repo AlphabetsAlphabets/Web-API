@@ -8,6 +8,8 @@ from flask_restful import Api
 
 import socket
 
+"""It's worth noting that the order of important is according the which api was made first.
+First import being the first endpoint that was made."""
 from endpoints.tap import Tap
 from endpoints.tinvoicehistory import TInvoiceHistory
 from endpoints.sync import Sync
@@ -16,6 +18,7 @@ from endpoints.insertGeneric import InsertGeneric
 from endpoints.login import Login
 from endpoints.upload import Upload
 from endpoints.location import Location
+from endpoints.firstTimeSetup import FirstTimeSetup
 
 app = Flask(__name__) 
 api = Api(app) 
@@ -29,6 +32,7 @@ api.add_resource(InsertGeneric, "/redirect/<string:table>/<string:invoiceno>")
 api.add_resource(Login, "/<string:user>/<string:password>")
 api.add_resource(Upload, "/upload/<string:saveName>")
 api.add_resource(Location, "/locations")
+api.add_resource(FirstTimeSetup, "/fts")
 
 @app.route("/") # Default page
 def hello():

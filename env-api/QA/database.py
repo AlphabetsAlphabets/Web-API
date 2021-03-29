@@ -1,6 +1,7 @@
 import datetime
 import decimal
 from typing import List, Union
+import os
 
 import mysql.connector
 from flask_restful import abort
@@ -145,7 +146,6 @@ class Database:
 
         return keyValuePairs
 
-
     def formatEntries(self, result: list) -> list:
         """Converts any MySQL database types to native python types that are also serializable.
 
@@ -249,7 +249,10 @@ class Database:
         return (", ").join(valid)
 
     def getPassword() -> List[str]:
-        with open("..\\env-api\\endpoints\\config.ini") as f:
+    """
+    Reads from a config.ini file, and extracts the contents in it. 
+    """
+        with open("env-api\\QA\\config.ini", "r") as f:
             lines = [line.strip("\n") for line in f.readlines()]
 
         return lines

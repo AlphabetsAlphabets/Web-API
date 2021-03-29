@@ -7,3 +7,4 @@ from endpoints.update import Update
 from endpoints.insertGeneric import InsertGeneric
 from endpoints.upload import Upload
 from endpoints.location import Location
+from endpoints.firstTimeSetup import FirstTimeSetup

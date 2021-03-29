@@ -1,5 +1,5 @@
 from flask_restful import Resource, abort, reqparse
-from typing import Union, Iterable
+from typing import Union
 from QA.database import Database
 from QA.key import Key
 

@@ -52,8 +52,8 @@ class InsertGeneric(Resource):
 
         """A redirect table of some sort is needed. Refer to testing.redirect for a guide."""
         try:
-                self.conn, self.cursor = Database.connect("localhost", "root", password[0], "testing")
-                self.schema = "testing"
+            self.conn, self.cursor = Database.connect("localhost", "root", password[0], "testing")
+            self.schema = "testing"
         except Exception:
             self.conn, self.cursor = Database.connect("localhost", "root", password[1], "tsc_office")
             self.schema = "tsc_office"

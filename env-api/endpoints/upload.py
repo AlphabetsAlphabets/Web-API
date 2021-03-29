@@ -117,7 +117,7 @@ class Upload(Resource):
         ### saveName
         The image's name"""
         # imageSave = os.getcwd() + f"\\{saveName}.jpg"
-        imageSave = os.getcwd() + f"\\{saveName}.jpg"
+        imageSave = os.getcwd() + f"\\src\\images\\{saveName}.jpg"
         print(imageSave)
         print("PUT")
         self.__startup(saveName)
@@ -144,7 +144,7 @@ class Upload(Resource):
             resized.convert("RGB").save(imageSave)
 
         # add path to my sql
-        pathToImage = (os.getcwd() + f"\\{saveName}.jpg").split("\\")
+        pathToImage = (os.getcwd() + f"\\src\\images\\{saveName}.jpg").split("\\")
         sqlCompliantPath = ("/").join(pathToImage)
 
         sqlQuery = f"INSERT INTO {self.schema}.{self.table} (`image name`, `image path`) VALUES ('{saveName}', '{sqlCompliantPath}')"
