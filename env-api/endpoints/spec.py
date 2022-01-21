@@ -89,7 +89,7 @@ class Spec(Resource):
         stitchedQuery = f"SELECT * FROM {self.schema}.{table} WHERE {stitchedWhereQuery}"
 
         """The part where the api makes another SQL query on your behalf"""
-        _ , redirCursor = Database.connect("localhost", "root", "YJH030412yjh_g", "{self.schema}")
+        _ , redirCursor = Database.connect("localhost", "root", "-", "{self.schema}")
         redirCursor.execute(stitchedQuery)
 
         redirRes = redirCursor.fetchall()
@@ -97,7 +97,7 @@ class Spec(Resource):
 
         """Handles the part with more than one result"""
         if lengthOfRedirRes > 1:
-            tempConn, tempCursor = Database.connect("localhost", "root", "YJH030412yjh_g", "{self.schema}")
+            tempConn, tempCursor = Database.connect("localhost", "root", "-", "{self.schema}")
             silent = tempCursor.execute(f"SELECT * FROM {self.schema}.trans LIMIT 1")
             res = tempCursor.fetchall()
             if len(res) == 0:
