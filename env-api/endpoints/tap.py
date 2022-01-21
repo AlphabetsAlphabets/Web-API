@@ -20,7 +20,7 @@ class Tap(Resource):
         """Handles initilization, and connects to a MySQL database."""
         self.schema = "tsc_office"
         try:
-            self.mydb, self.cursor = Database().connect("localhost", "root", "YJH030412yjh_g", self.schema)
+            self.mydb, self.cursor = Database().connect("localhost", "root", "-", self.schema)
 
         except ProgrammingError:
             self.mydb, self.cursor = Database().connect("localhost", "root", "8811967", self.schema)

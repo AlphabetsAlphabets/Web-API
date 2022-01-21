@@ -19,7 +19,7 @@ class Login(Resource):
         try:
             self.tap, self.cursor = Database.connect("localhost", "root", "8811967", "tsc_office")
         except NotFound:
-            self.tap, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", "tsc_office")
+            self.tap, self.cursor = Database.connect("localhost", "root", "-", "tsc_office")
 
     def get(self, user, password):
         """Processes the GET request

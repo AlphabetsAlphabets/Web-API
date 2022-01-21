@@ -26,7 +26,7 @@ class Key(Resource):
 		self.schema = "testing"
 		self.table = "creds"
 		try:
-			self.keyTable, self.keyCursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)
+			self.keyTable, self.keyCursor = Database.connect("localhost", "root", "-", self.schema)
 		except ProgrammingError as err:
 			abort(503, message="Unable to connect to database. Check your credentials.")
 

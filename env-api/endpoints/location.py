@@ -31,7 +31,7 @@ class Location(Resource):
         self.__info()
 
         try:
-            self.conn, self.cursor = Database.connect("localhost", "root", "YJH030412yjh_g", "tsc_office")
+            self.conn, self.cursor = Database.connect("localhost", "root", "-", "tsc_office")
         except Exception:
             self.conn, self.cursor = Database.connect("localhost", "root", "8811967", "tsc_office")
         except Exception:

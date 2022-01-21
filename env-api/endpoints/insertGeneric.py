@@ -126,7 +126,7 @@ class InsertGeneric(Resource):
         joinedColumnNames = (", ").join(formattedColumnNames)
 
         try:
-            redirConn, redirCursor = Database.connect("localhost", "root", "YJH030412yjh_g", self.schema)# Change database
+            redirConn, redirCursor = Database.connect("localhost", "root", "-", self.schema)# Change database
         except Exception:
             redirConn, redirCursor = Database.connect("localhost", "root", "8811967", self.schema)
 
